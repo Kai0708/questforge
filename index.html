@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Questforge — Medieval Productivity</title>
+<link href="https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400&family=Almendra+Display&family=Fondamento:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --parch:#F4E4B8;--parch2:#E6D098;--parch3:#CEB87A;--parch4:#B89A52;
+  --stone:#1C1710;--stone2:#2E2618;--stone3:#46391F;--stone4:#6B5A35;
+  --gold:#C8911E;--gold2:#E8B84A;--gold3:#F7D070;--gold4:#FFF0A0;
+  --purple:#3D1F6B;--purple2:#5E3399;--purple3:#8855CC;
+  --crimson:#7A1515;--crimson2:#AA2222;--crimson3:#DD4444;
+  --forest:#0F3320;--forest2:#1A5C35;--forest3:#2E8A52;
+  --ink:#160E04;--ink2:#2A1C08;--ink3:#4A3215;
+}
+body{font-family:'Fondamento',cursive;background:#1C1710;color:var(--ink);min-height:100vh;overflow-x:hidden;}
+.app-shell{min-height:100vh;background:linear-gradient(180deg,#0d0a05 0%,#1a1208 60%,#150e05 100%);}
+
+/* ── LOGIN ── */
+#pg-login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;background:radial-gradient(ellipse at 50% 10%,rgba(61,31,107,0.45) 0%,transparent 55%),radial-gradient(ellipse at 30% 90%,rgba(122,21,21,0.3) 0%,transparent 50%),linear-gradient(180deg,#080604 0%,#130e07 100%);}
+.castle-art{margin-bottom:1.5rem;filter:drop-shadow(0 0 24px rgba(200,145,30,0.35));}
+.realm-name{font-family:'Almendra Display',serif;font-size:3rem;color:var(--gold3);letter-spacing:0.08em;text-shadow:0 0 30px rgba(200,145,30,0.4),3px 3px 0 rgba(0,0,0,0.6);margin-bottom:0.25rem;text-align:center;}
+.realm-tagline{font-family:'Fondamento',cursive;font-style:italic;font-size:1rem;color:var(--parch3);opacity:.75;text-align:center;margin-bottom:2rem;}
+.login-parchment{background:linear-gradient(155deg,var(--parch) 0%,var(--parch2) 55%,var(--parch3) 100%);border:3px solid var(--gold);border-radius:3px;padding:2.2rem 2.4rem 2rem;width:100%;max-width:390px;box-shadow:0 0 0 1px rgba(200,145,30,0.25),0 24px 64px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.35);position:relative;}
+.login-parchment::before{content:'';position:absolute;inset:7px;border:1px solid rgba(200,145,30,0.35);border-radius:1px;pointer-events:none;}
+.seal{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#d42a2a,#7A1515);border:2px solid var(--gold3);display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 3px 10px rgba(0,0,0,0.55);z-index:3;}
+.parch-heading{font-family:'Almendra',serif;font-size:1.25rem;font-weight:700;color:var(--ink);text-align:center;margin:0.5rem 0 1.4rem;}
+.flabel{display:block;font-family:'Almendra',serif;font-size:0.7rem;letter-spacing:0.12em;color:var(--ink3);margin-bottom:0.35rem;text-transform:uppercase;}
+.finput{width:100%;padding:0.65rem 0.9rem;background:rgba(22,14,4,0.08);border:1.5px solid var(--parch3);border-radius:2px;font-family:'Fondamento',cursive;font-size:0.95rem;color:var(--ink);outline:none;transition:border-color .2s;margin-bottom:1rem;}
+.finput:focus{border-color:var(--gold);background:rgba(255,255,255,0.28);}
+textarea.finput{resize:vertical;min-height:55px;margin-bottom:0;}
+select.finput{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234A3215' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:2rem;cursor:pointer;margin-bottom:0;}
+.btn-realm{width:100%;padding:0.85rem;background:linear-gradient(180deg,var(--gold2) 0%,var(--gold) 55%,#A07010 100%);border:2px solid var(--parch3);border-radius:2px;font-family:'Almendra Display',serif;font-size:1rem;color:var(--ink);cursor:pointer;letter-spacing:0.08em;text-shadow:0 1px 0 rgba(255,255,255,0.2);box-shadow:0 4px 14px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.25);transition:all .2s;margin-top:.3rem;}
+.btn-realm:hover{background:linear-gradient(180deg,var(--gold3) 0%,var(--gold2) 55%,var(--gold) 100%);transform:translateY(-2px);box-shadow:0 7px 18px rgba(0,0,0,0.55);}
+.btn-realm:active{transform:translateY(1px);}
+.divider{text-align:center;color:var(--parch4);font-style:italic;font-size:.8rem;margin:.9rem 0;position:relative;}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:36%;height:1px;background:var(--parch3);}
+.divider::before{left:0;}.divider::after{right:0;}
+.btn-goog{width:100%;padding:.65rem;background:rgba(22,14,4,0.07);border:1.5px solid var(--parch3);border-radius:2px;font-family:'Almendra',serif;font-size:.82rem;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s;letter-spacing:.04em;}
+.btn-goog:hover{border-color:var(--gold);background:rgba(200,145,30,0.1);}
+.lswitch{text-align:center;margin-top:.9rem;font-size:.82rem;color:var(--ink3);}
+.lswitch span{color:var(--gold);cursor:pointer;text-decoration:underline;}
+
+/* ── NAV ── */
+#pg-app{display:none;flex-direction:column;min-height:100vh;}
+.topnav{background:linear-gradient(180deg,#0a0703 0%,#130e07 100%);border-bottom:2px solid var(--gold);padding:.55rem 1.4rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 20px rgba(0,0,0,0.65);}
+.brand{font-family:'Almendra Display',serif;font-size:1.45rem;color:var(--gold3);text-shadow:0 0 18px rgba(200,145,30,0.35);letter-spacing:.06em;display:flex;align-items:center;gap:.4rem;}
+.navlinks{display:flex;gap:.25rem;}
+.navbtn{padding:.38rem .85rem;font-family:'Almendra',serif;font-size:.72rem;color:var(--parch3);border:1px solid transparent;border-radius:2px;cursor:pointer;background:none;transition:all .2s;letter-spacing:.05em;}
+.navbtn:hover,.navbtn.active{color:var(--gold3);border-color:rgba(200,145,30,0.4);background:rgba(200,145,30,0.1);}
+.nav-r{display:flex;align-items:center;gap:.9rem;}
+.nav-streak{display:flex;align-items:center;gap:.3rem;font-family:'Almendra',serif;font-size:.78rem;color:#FF8C00;}
+.flame-anim{font-size:1.1rem;display:inline-block;animation:flicker 1.6s ease-in-out infinite alternate;}
+@keyframes flicker{0%{filter:brightness(1) drop-shadow(0 0 3px #FF8C00);}100%{filter:brightness(1.4) drop-shadow(0 0 9px #FF4500);}}
+.nav-gold{display:flex;align-items:center;gap:.3rem;font-family:'Almendra',serif;font-size:.78rem;color:var(--gold3);}
+.avatar-orb{width:33px;height:33px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--crimson));border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Almendra Display',serif;font-size:.8rem;color:var(--gold3);cursor:pointer;}
+
+/* ── LAYOUT ── */
+.maincontent{display:flex;flex:1;min-height:calc(100vh - 58px);}
+
+/* ── SIDEBAR ── */
+.sidebar{width:255px;background:linear-gradient(180deg,#0f0b06 0%,#1a1208 100%);border-right:2px solid rgba(200,145,30,0.28);padding:1.3rem .9rem;flex-shrink:0;display:flex;flex-direction:column;gap:1.3rem;overflow-y:auto;}
+.char-card{background:linear-gradient(155deg,var(--parch) 0%,var(--parch2) 60%,var(--parch3) 100%);border:2px solid var(--gold);border-radius:3px;padding:.95rem;position:relative;}
+.lvl-badge{position:absolute;top:-11px;right:9px;background:linear-gradient(135deg,var(--gold2),var(--gold3));border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-family:'Almendra Display',serif;font-size:.88rem;font-weight:700;color:var(--ink);border:2px solid var(--ink3);box-shadow:0 2px 8px rgba(0,0,0,0.45);}
+.char-name{font-family:'Almendra Display',serif;font-size:.98rem;color:var(--ink);margin-bottom:.15rem;}
+.char-class{font-family:'Fondamento',cursive;font-style:italic;font-size:.8rem;color:var(--purple2);margin-bottom:.75rem;}
+.xp-lbl{font-family:'Almendra',serif;font-size:.6rem;letter-spacing:.12em;color:var(--ink3);text-transform:uppercase;margin-bottom:.28rem;}
+.xp-track{height:15px;background:rgba(22,14,4,0.18);border:1.5px solid var(--parch3);border-radius:2px;overflow:hidden;position:relative;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--purple) 0%,var(--purple2) 55%,var(--purple3) 100%);transition:width .6s ease;position:relative;}
+.xp-fill::after{content:'';position:absolute;top:2px;left:4px;right:4px;height:4px;background:rgba(255,255,255,0.28);border-radius:2px;}
+.xp-num{font-family:'Almendra',serif;font-size:.62rem;color:var(--ink3);text-align:right;margin-top:.18rem;}
+.stat-row{display:flex;gap:.4rem;margin-top:.7rem;}
+.stat-cell{flex:1;text-align:center;background:rgba(22,14,4,0.1);border:1px solid rgba(200,145,30,0.2);border-radius:2px;padding:.35rem .2rem;}
+.stat-val{font-family:'Almendra Display',serif;font-size:1rem;color:var(--gold);}
+.stat-lbl{font-family:'Almendra',serif;font-size:.58rem;color:var(--ink3);letter-spacing:.07em;text-transform:uppercase;}
+.torch-card,.timer-card,.achievements-card{background:linear-gradient(155deg,var(--parch) 0%,var(--parch2) 60%,var(--parch3) 100%);border:2px solid var(--gold);border-radius:3px;padding:.9rem;}
+.torch-card,.timer-card{text-align:center;}
+.widget-title{font-family:'Almendra',serif;font-size:.68rem;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;margin-bottom:.55rem;}
+.big-flame{font-size:2.4rem;display:block;animation:flicker 1.6s ease-in-out infinite alternate;line-height:1;}
+.streak-num{font-family:'Almendra Display',serif;font-size:1.9rem;color:#FF8C00;text-shadow:0 0 10px rgba(255,140,0,0.35);}
+.streak-sub{font-family:'Fondamento',cursive;font-style:italic;font-size:.72rem;color:var(--ink3);}
+.timer-num{font-family:'Almendra Display',serif;font-size:2rem;color:var(--ink);font-variant-numeric:tabular-nums;}
+.timer-sub{font-size:.68rem;color:var(--ink3);font-style:italic;margin:.15rem 0 .5rem;}
+.btn-timer{width:100%;padding:.45rem;background:linear-gradient(180deg,var(--forest2),var(--forest));border:1.5px solid #2a7a4a;border-radius:2px;font-family:'Almendra',serif;font-size:.68rem;color:#90EE90;cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+.btn-timer:hover{background:linear-gradient(180deg,var(--forest3),var(--forest2));transform:translateY(-1px);}
+.achievement-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-top:.5rem;}
+.achv{background:rgba(22,14,4,0.1);border:1px solid rgba(200,145,30,0.25);border-radius:2px;padding:.4rem .5rem;text-align:center;}
+.achv.locked{opacity:.35;filter:grayscale(1);}
+.achv-icon{font-size:1.3rem;display:block;}
+.achv-name{font-family:'Almendra',serif;font-size:.55rem;color:var(--ink3);margin-top:.2rem;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ── BOARD ── */
+.board{flex:1;padding:1.4rem;background:linear-gradient(135deg,#130e07 0%,#1e1608 100%);overflow-y:auto;}
+.board-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.7rem;}
+.board-title{font-family:'Almendra Display',serif;font-size:1.85rem;color:var(--gold3);text-shadow:0 0 20px rgba(200,145,30,0.3);display:flex;align-items:center;gap:.6rem;}
+.btn-addquest{padding:.55rem 1.2rem;background:linear-gradient(180deg,var(--gold2) 0%,var(--gold) 55%,#A07010 100%);border:2px solid var(--parch3);border-radius:2px;font-family:'Almendra',serif;font-size:.78rem;font-weight:700;color:var(--ink);cursor:pointer;letter-spacing:.06em;box-shadow:0 3px 9px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.2);transition:all .2s;}
+.btn-addquest:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,0.5);}
+.day-banner{background:linear-gradient(90deg,rgba(61,31,107,0.3),rgba(122,21,21,0.3));border:1px solid rgba(200,145,30,0.38);border-radius:2px;padding:.55rem .9rem;margin-bottom:1.1rem;font-family:'Almendra',serif;font-size:.78rem;color:var(--gold3);display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;}
+.perfect-banner{background:linear-gradient(90deg,rgba(61,31,107,0.5),rgba(200,145,30,0.3),rgba(122,21,21,0.5));border:2px solid var(--gold3);border-radius:2px;padding:.7rem 1rem;margin-bottom:1.1rem;font-family:'Almendra Display',serif;font-size:1rem;color:var(--gold3);text-align:center;text-shadow:0 0 12px rgba(200,145,30,0.5);display:none;}
+.filtertabs{display:flex;gap:.4rem;margin-bottom:1.1rem;flex-wrap:wrap;}
+.ftab{padding:.3rem .75rem;background:rgba(200,145,30,0.08);border:1px solid rgba(200,145,30,0.22);border-radius:2px;font-family:'Almendra',serif;font-size:.68rem;color:var(--parch3);cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.ftab:hover,.ftab.active{background:rgba(200,145,30,0.2);border-color:var(--gold);color:var(--gold3);}
+.quest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:.95rem;}
+
+/* ── QUEST CARD ── */
+.qcard{background:linear-gradient(155deg,var(--parch) 0%,var(--parch2) 60%,var(--parch3) 100%);border:2px solid var(--parch3);border-radius:3px;padding:.95rem 1rem;position:relative;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.38);}
+.qcard::before{content:'';position:absolute;inset:5px;border:.5px solid rgba(200,145,30,0.28);border-radius:1px;pointer-events:none;}
+.qcard:hover{transform:translateY(-3px) rotate(.25deg);box-shadow:0 9px 22px rgba(0,0,0,0.52);border-color:var(--gold);}
+.qcard.done{opacity:.6;background:linear-gradient(155deg,#cfc4a0 0%,#c0b080 100%);}
+.qcard.done::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='34' fill='%237A1515' opacity='.14'/%3E%3Cpath d='M32 50 L45 63 L68 37' stroke='%237A1515' stroke-width='6' fill='none' opacity='.28'/%3E%3C/svg%3E") center/58px no-repeat;pointer-events:none;}
+.qcard.boss-card{border-color:var(--crimson2);background:linear-gradient(155deg,#f3dcd8 0%,#e6c6be 60%,#d0a898 100%);box-shadow:0 4px 14px rgba(122,21,21,0.3),0 0 0 1px rgba(122,21,21,0.18);}
+.boss-ribbon{position:absolute;top:8px;right:-3px;background:linear-gradient(135deg,var(--crimson),var(--crimson2));font-family:'Almendra',serif;font-size:.55rem;color:#ffc8c8;letter-spacing:.1em;padding:.18rem .55rem;text-transform:uppercase;border-radius:1px;box-shadow:2px 2px 5px rgba(0,0,0,0.4);}
+.qhdr{display:flex;align-items:flex-start;justify-content:space-between;gap:.45rem;margin-bottom:.5rem;}
+.qtitle{font-family:'Almendra',serif;font-size:.92rem;font-weight:700;color:var(--ink);line-height:1.3;flex:1;}
+.qcard.done .qtitle{text-decoration:line-through;opacity:.65;}
+.diff-icon{font-size:1.05rem;flex-shrink:0;}
+.qdesc{font-family:'Fondamento',cursive;font-style:italic;font-size:.8rem;color:var(--ink3);margin-bottom:.7rem;line-height:1.4;}
+.boss-hp-lbl{display:flex;justify-content:space-between;font-family:'Almendra',serif;font-size:.6rem;color:var(--crimson2);margin-bottom:.2rem;}
+.boss-hp-track{height:10px;background:rgba(22,14,4,0.2);border:1.5px solid var(--crimson);border-radius:2px;overflow:hidden;margin-bottom:.6rem;}
+.boss-hp-fill{height:100%;background:linear-gradient(90deg,var(--crimson),var(--crimson2));transition:width .5s;}
+.qfooter{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.35rem;}
+.xp-tag{display:flex;align-items:center;gap:.2rem;font-family:'Almendra',serif;font-size:.68rem;color:var(--purple2);font-weight:700;}
+.time-tag{font-family:'Fondamento',cursive;font-size:.72rem;color:var(--stone4);font-style:italic;}
+.btn-complete{padding:.28rem .65rem;background:linear-gradient(180deg,var(--forest2),var(--forest));border:1px solid var(--forest3);border-radius:2px;font-family:'Almendra',serif;font-size:.62rem;color:#90EE90;cursor:pointer;transition:all .15s;letter-spacing:.03em;}
+.btn-complete:hover{background:linear-gradient(180deg,var(--forest3),var(--forest2));transform:scale(1.04);}
+.btn-del{padding:.28rem .55rem;background:rgba(122,21,21,0.12);border:1px solid rgba(122,21,21,0.35);border-radius:2px;font-family:'Almendra',serif;font-size:.62rem;color:var(--crimson2);cursor:pointer;transition:all .15s;}
+.btn-del:hover{background:rgba(122,21,21,0.25);}
+.empty-board{grid-column:1/-1;text-align:center;padding:3rem 2rem;color:var(--parch3);font-style:italic;}
+.empty-icon{font-size:2.8rem;display:block;margin-bottom:.9rem;opacity:.45;}
+.empty-txt{font-family:'Fondamento',cursive;font-size:1rem;opacity:.6;}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:1000;align-items:center;justify-content:center;padding:1rem;}
+.modal-bg.open{display:flex;}
+.modal-scroll{background:linear-gradient(155deg,var(--parch) 0%,var(--parch2) 60%,var(--parch3) 100%);border:3px solid var(--gold);border-radius:3px;padding:1.8rem 2.1rem;width:100%;max-width:470px;position:relative;max-height:90vh;overflow-y:auto;box-shadow:0 0 0 1px rgba(200,145,30,0.28),0 24px 64px rgba(0,0,0,.75);}
+.modal-scroll::before{content:'';position:absolute;inset:7px;border:1px solid rgba(200,145,30,0.3);border-radius:1px;pointer-events:none;}
+.modal-title{font-family:'Almendra Display',serif;font-size:1.25rem;color:var(--ink);text-align:center;margin-bottom:1.3rem;border-bottom:1px solid var(--parch3);padding-bottom:.7rem;}
+.modal-x{position:absolute;top:.9rem;right:.9rem;background:none;border:1px solid var(--parch3);border-radius:2px;width:27px;height:27px;font-size:.9rem;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.modal-x:hover{border-color:var(--crimson2);color:var(--crimson2);}
+.fgroup{margin-bottom:.95rem;}
+.diff-sel{display:grid;grid-template-columns:repeat(5,1fr);gap:.35rem;}
+.dopt{padding:.45rem .15rem;border:2px solid var(--parch3);border-radius:2px;background:rgba(22,14,4,.05);text-align:center;cursor:pointer;transition:all .15s;font-family:'Almendra',serif;font-size:.58rem;color:var(--ink3);}
+.dopt:hover{border-color:var(--gold);background:rgba(200,145,30,.1);}
+.dopt.sel{border-color:var(--gold);background:rgba(200,145,30,.2);color:var(--ink);}
+.d-em{font-size:1.3rem;display:block;margin-bottom:.18rem;}
+.modal-actions{display:flex;gap:.7rem;margin-top:1.3rem;}
+.btn-sub{flex:1;padding:.65rem;background:linear-gradient(180deg,var(--gold2) 0%,var(--gold) 55%,#A07010 100%);border:2px solid var(--parch3);border-radius:2px;font-family:'Almendra Display',serif;font-size:.88rem;color:var(--ink);cursor:pointer;transition:all .2s;}
+.btn-sub:hover{transform:translateY(-1px);}
+.btn-can{padding:.65rem 1.1rem;background:rgba(22,14,4,.1);border:1.5px solid var(--parch3);border-radius:2px;font-family:'Almendra',serif;font-size:.82rem;color:var(--ink3);cursor:pointer;transition:all .2s;}
+.btn-can:hover{border-color:var(--crimson2);color:var(--crimson2);}
+
+/* ── LEADERBOARD ── */
+.leaderboard-page{flex:1;padding:1.8rem;display:none;overflow-y:auto;}
+.leaderboard-page.show{display:block;}
+.lb-row{display:flex;align-items:center;gap:.8rem;padding:.7rem 1rem;background:linear-gradient(155deg,var(--parch) 0%,var(--parch2) 100%);border:1.5px solid var(--parch3);border-radius:3px;margin-bottom:.5rem;transition:all .2s;}
+.lb-row:hover{border-color:var(--gold);transform:translateX(3px);}
+.lb-rank{font-family:'Almendra Display',serif;font-size:1.1rem;color:var(--gold);min-width:28px;}
+.lb-rank.first{font-size:1.4rem;} .lb-rank.second{color:var(--parch3);font-size:1.2rem;} .lb-rank.third{color:#CD7F32;font-size:1.15rem;}
+.lb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--crimson));border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Almendra Display',serif;font-size:.75rem;color:var(--gold3);}
+.lb-name{font-family:'Almendra',serif;font-size:.88rem;color:var(--ink);flex:1;}
+.lb-xp{font-family:'Almendra Display',serif;font-size:.9rem;color:var(--purple2);}
+.lb-level{font-family:'Almendra',serif;font-size:.7rem;color:var(--ink3);background:rgba(200,145,30,.18);border:1px solid rgba(200,145,30,.3);border-radius:10px;padding:.15rem .5rem;}
+
+/* ── SETTINGS ── */
+.settings-page{flex:1;padding:1.8rem;display:none;overflow-y:auto;}
+.settings-page.show{display:block;}
+.scard{background:linear-gradient(155deg,var(--parch) 0%,var(--parch2) 60%,var(--parch3) 100%);border:2px solid var(--gold);border-radius:3px;padding:1.3rem 1.5rem;margin-bottom:1.3rem;}
+.scard-title{font-family:'Almendra Display',serif;font-size:1rem;color:var(--ink);margin-bottom:.9rem;border-bottom:1px solid var(--parch3);padding-bottom:.5rem;}
+.srow{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem;}
+.slabel{font-family:'Fondamento',cursive;font-size:.88rem;color:var(--ink3);}
+.toggle{position:relative;width:42px;height:22px;background:rgba(22,14,4,.2);border:1.5px solid var(--parch3);border-radius:11px;cursor:pointer;transition:all .3s;flex-shrink:0;}
+.toggle.on{background:var(--forest2);border-color:var(--forest3);}
+.toggle-knob{position:absolute;top:2px;left:2px;width:15px;height:15px;background:var(--parch);border-radius:50%;transition:transform .3s;border:1px solid rgba(22,14,4,.15);}
+.toggle.on .toggle-knob{transform:translateX(20px);}
+
+/* ── FLOATING ── */
+.xp-popup{position:fixed;top:72px;right:18px;background:linear-gradient(135deg,var(--purple),var(--purple2));border:2px solid var(--gold3);border-radius:3px;padding:.7rem 1.1rem;font-family:'Almendra Display',serif;font-size:.95rem;color:var(--gold3);z-index:2000;box-shadow:0 4px 20px rgba(0,0,0,.55);transform:translateX(220px);opacity:0;transition:all .3s ease;}
+.xp-popup.show{transform:translateX(0);opacity:1;}
+.coin{position:fixed;width:14px;height:14px;background:radial-gradient(circle at 35% 35%,var(--gold3),var(--gold));border-radius:50%;border:1.5px solid #7A5A10;z-index:1999;pointer-events:none;animation:coinfall 1.4s ease-in forwards;}
+@keyframes coinfall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(280px) rotate(720deg);opacity:0;}}
+.levelup-wrap{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:3000;display:none;align-items:center;justify-content:center;}
+.levelup-wrap.show{display:flex;}
+.levelup-box{background:linear-gradient(155deg,var(--parch) 0%,var(--parch2) 100%);border:4px solid var(--gold);border-radius:5px;padding:2.8rem 3.5rem;text-align:center;box-shadow:0 0 60px rgba(200,145,30,.45);animation:lvlpop .4s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes lvlpop{0%{transform:scale(.3);opacity:0;}100%{transform:scale(1);opacity:1;}}
+.lvl-up-title{font-family:'Almendra Display',serif;font-size:2.4rem;color:var(--gold2);text-shadow:0 0 18px rgba(200,145,30,.45);margin-bottom:.4rem;}
+.lvl-up-num{font-family:'Almendra Display',serif;font-size:5rem;color:var(--ink);line-height:1;text-shadow:2px 2px 0 var(--gold);}
+.lvl-up-sub{font-family:'Fondamento',cursive;font-style:italic;color:var(--ink3);margin-top:.4rem;}
+.btn-lvlclose{margin-top:1.1rem;padding:.65rem 2rem;background:linear-gradient(180deg,var(--gold2),var(--gold));border:2px solid #7A5A10;border-radius:2px;font-family:'Almendra Display',serif;font-size:.88rem;color:var(--ink);cursor:pointer;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.2);}
+::-webkit-scrollbar-thumb{background:rgba(200,145,30,.38);border-radius:2px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(200,145,30,.6);}
+
+@media(max-width:768px){
+  .sidebar{width:100%;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:2px solid rgba(200,145,30,0.28);}
+  .char-card,.torch-card,.timer-card,.achievements-card{flex:1;min-width:200px;}
+  .maincontent{flex-direction:column;}
+  .navlinks{gap:.1rem;}
+  .navbtn{font-size:.65rem;padding:.3rem .6rem;}
+  .realm-name{font-size:2rem;}
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+<!-- ══ LOGIN ══ -->
+<div id="pg-login">
+  <svg class="castle-art" width="210" height="115" viewBox="0 0 210 115">
+    <rect x="20" y="68" width="170" height="47" fill="#1C1710"/>
+    <rect x="20" y="38" width="32" height="34" fill="#1C1710"/>
+    <rect x="89" y="27" width="32" height="45" fill="#1C1710"/>
+    <rect x="158" y="38" width="32" height="34" fill="#1C1710"/>
+    <rect x="20" y="30" width="8" height="12" fill="#1C1710"/><rect x="32" y="30" width="8" height="12" fill="#1C1710"/><rect x="44" y="30" width="8" height="12" fill="#1C1710"/>
+    <rect x="89" y="19" width="8" height="12" fill="#1C1710"/><rect x="101" y="19" width="8" height="12" fill="#1C1710"/><rect x="113" y="19" width="8" height="12" fill="#1C1710"/>
+    <rect x="158" y="30" width="8" height="12" fill="#1C1710"/><rect x="170" y="30" width="8" height="12" fill="#1C1710"/><rect x="182" y="30" width="8" height="12" fill="#1C1710"/>
+    <rect x="90" y="82" width="30" height="33" fill="#080604"/>
+    <ellipse cx="105" cy="82" rx="15" ry="11" fill="#080604"/>
+    <line x1="97" y1="78" x2="97" y2="115" stroke="#2E2618" stroke-width="2"/>
+    <line x1="105" y1="75" x2="105" y2="115" stroke="#2E2618" stroke-width="2"/>
+    <line x1="113" y1="78" x2="113" y2="115" stroke="#2E2618" stroke-width="2"/>
+    <line x1="90" y1="88" x2="120" y2="88" stroke="#2E2618" stroke-width="1.5"/>
+    <rect x="76" y="68" width="4" height="12" fill="#6B5A35"/>
+    <ellipse cx="78" cy="65" rx="5" ry="7" fill="#FF8C00" opacity=".9"/>
+    <ellipse cx="78" cy="62" rx="3" ry="4" fill="#FFD700" opacity=".7"/>
+    <rect x="130" y="68" width="4" height="12" fill="#6B5A35"/>
+    <ellipse cx="132" cy="65" rx="5" ry="7" fill="#FF8C00" opacity=".9"/>
+    <ellipse cx="132" cy="62" rx="3" ry="4" fill="#FFD700" opacity=".7"/>
+    <circle cx="45" cy="14" r="1.5" fill="#F7D070" opacity=".8"/>
+    <circle cx="82" cy="7" r="1" fill="#F7D070" opacity=".6"/>
+    <circle cx="148" cy="11" r="1.5" fill="#F7D070" opacity=".8"/>
+    <circle cx="170" cy="4" r="1" fill="#F7D070" opacity=".55"/>
+    <circle cx="60" cy="4" r="1" fill="#F7D070" opacity=".5"/>
+    <ellipse cx="105" cy="102" rx="22" ry="8" fill="#C8911E" opacity=".12"/>
+  </svg>
+  <div class="realm-name">✦ Questforge ✦</div>
+  <div class="realm-tagline">Where heroes vanquish procrastination</div>
+  <div class="login-parchment">
+    <div class="seal">⚜</div>
+    <div class="parch-heading" id="login-heading">Enter the Realm</div>
+    <div id="lform">
+      <div class="fgroup">
+        <label class="flabel">✦ Thy Email Scroll</label>
+        <input class="finput" type="email" id="lemail" placeholder="hero@realm.com"/>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">⚔ Password Ward</label>
+        <input class="finput" type="password" id="lpass" placeholder="••••••••"/>
+      </div>
+      <button class="btn-realm" onclick="doLogin()">⚔ Enter the Realm</button>
+      <div class="divider">or</div>
+      <button class="btn-goog" onclick="doLogin()">
+        <svg width="15" height="15" viewBox="0 0 16 16"><path d="M15.5 8.17c0-.52-.05-1.02-.14-1.5H8v2.85h4.2a3.6 3.6 0 01-1.56 2.36v1.96h2.52c1.48-1.36 2.34-3.36 2.34-5.67z" fill="#4285F4"/><path d="M8 16c2.12 0 3.9-.7 5.2-1.9l-2.52-1.97C9.93 12.75 9.02 13 8 13a5.12 5.12 0 01-4.8-3.53H.6v2.03A8 8 0 008 16z" fill="#34A853"/><path d="M3.2 9.47A4.87 4.87 0 013 8c0-.51.1-1.01.2-1.47V4.5H.6A8 8 0 000 8c0 1.29.31 2.5.6 3.5l2.6-2.03z" fill="#FBBC05"/><path d="M8 3.13c1.2 0 2.27.41 3.12 1.22l2.33-2.33A8 8 0 00.6 4.5L3.2 6.53A4.88 4.88 0 018 3.13z" fill="#EA4335"/></svg>
+        Ride forth with Google
+      </button>
+      <div class="lswitch">New to the realm? <span onclick="toggleReg()">Forge thy legend</span></div>
+    </div>
+    <div id="rform" style="display:none">
+      <div class="fgroup"><label class="flabel">⚔ Hero Name</label><input class="finput" type="text" placeholder="Sir Aldric the Bold"/></div>
+      <div class="fgroup"><label class="flabel">✦ Email Scroll</label><input class="finput" type="email" placeholder="hero@realm.com"/></div>
+      <div class="fgroup"><label class="flabel">🛡 Password Ward</label><input class="finput" type="password" placeholder="Min 8 characters"/></div>
+      <button class="btn-realm" onclick="doLogin()">✦ Begin Thy Legend</button>
+      <div class="lswitch">Already a hero? <span onclick="toggleReg()">Return to the gate</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="pg-app">
+  <nav class="topnav">
+    <div class="brand">✦ Questforge</div>
+    <div class="navlinks">
+      <button class="navbtn active" id="nav-board" onclick="showPage('board')">📜 Quest Board</button>
+      <button class="navbtn" id="nav-lb" onclick="showPage('lb')">⚔ Rankings</button>
+      <button class="navbtn" id="nav-settings" onclick="showPage('settings')">🏰 Citadel</button>
+    </div>
+    <div class="nav-r">
+      <div class="nav-streak"><span class="flame-anim">🔥</span><span id="nstreak">7</span></div>
+      <div class="nav-gold">🪙 <span id="ngold">450</span></div>
+      <div class="avatar-orb" onclick="showPage('settings')">S</div>
+    </div>
+  </nav>
+
+  <div class="maincontent">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="char-card">
+        <div class="lvl-badge" id="lvl-badge">5</div>
+        <div class="char-name" id="cname">Sir Roland</div>
+        <div class="char-class">Knight of Productivity</div>
+        <div class="xp-lbl">✦ Experience</div>
+        <div class="xp-track"><div class="xp-fill" id="xpfill" style="width:62%"></div></div>
+        <div class="xp-num"><span id="xpcur">310</span> / <span id="xpmax">500</span> XP</div>
+        <div class="stat-row">
+          <div class="stat-cell"><div class="stat-val" id="s-quests">12</div><div class="stat-lbl">Quests</div></div>
+          <div class="stat-cell"><div class="stat-val" id="s-gold">450</div><div class="stat-lbl">Gold</div></div>
+          <div class="stat-cell"><div class="stat-val" id="s-streak">7</div><div class="stat-lbl">Streak</div></div>
+        </div>
+      </div>
+      <div class="torch-card">
+        <div class="widget-title">✦ Daily Flame ✦</div>
+        <span class="big-flame" id="bigflame">🔥</span>
+        <div class="streak-num" id="streaknum">7</div>
+        <div class="streak-sub">days of glory</div>
+      </div>
+      <div class="timer-card">
+        <div class="widget-title">⏳ Hourglass Focus</div>
+        <div class="timer-num" id="timer-disp">5:00</div>
+        <div class="timer-sub" id="timer-sub">+15 XP upon completion</div>
+        <button class="btn-timer" id="timer-btn" onclick="toggleTimer()">⏳ Begin Thy Quest</button>
+      </div>
+      <div class="achievements-card">
+        <div class="widget-title">✦ Achievements ✦</div>
+        <div class="achievement-grid" id="achv-grid"></div>
+      </div>
+    </aside>
+
+    <!-- QUEST BOARD -->
+    <div class="board" id="page-board">
+      <div class="board-hdr">
+        <div class="board-title">📜 The Quest Board</div>
+        <button class="btn-addquest" onclick="openAdd()">+ Declare Quest</button>
+      </div>
+      <div class="perfect-banner" id="perfect-banner">⚜ Perfect Day! All quests conquered! +50 Bonus XP! ⚜</div>
+      <div class="day-banner">📊 Today: <span id="dc">2</span> of <span id="dt">5</span> quests complete · Complete all for <strong>+50 Bonus XP!</strong></div>
+      <div class="filtertabs">
+        <button class="ftab active" onclick="setFilter('all',this)">All Quests</button>
+        <button class="ftab" onclick="setFilter('active',this)">Active</button>
+        <button class="ftab" onclick="setFilter('boss',this)">⚔ Boss</button>
+        <button class="ftab" onclick="setFilter('done',this)">Completed</button>
+      </div>
+      <div class="quest-grid" id="qgrid"></div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div class="leaderboard-page" id="page-lb">
+      <div class="board-hdr"><div class="board-title">⚔ Hall of Champions</div></div>
+      <div id="lb-list"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="settings-page" id="page-settings">
+      <div class="board-hdr"><div class="board-title">🏰 The Citadel</div></div>
+      <div class="scard">
+        <div class="scard-title">⚔ Hero Profile</div>
+        <div class="fgroup"><label class="flabel">Hero Name</label><input class="finput" type="text" value="Sir Roland" id="set-name"/></div>
+        <div class="fgroup"><label class="flabel">Title / Class</label><input class="finput" type="text" value="Knight of Productivity"/></div>
+        <div class="fgroup"><label class="flabel">Email Scroll</label><input class="finput" type="email" value="hero@questforge.com"/></div>
+        <button class="btn-realm" style="max-width:180px;font-size:.82rem;padding:.6rem" onclick="alert('Hail! Thy profile hath been saved.')">Save Profile</button>
+      </div>
+      <div class="scard">
+        <div class="scard-title">📅 Google Calendar Sync</div>
+        <div class="srow"><span class="slabel">Sync calendar events as quests</span><div class="toggle" id="t-cal" onclick="tog('t-cal')"><div class="toggle-knob"></div></div></div>
+        <div class="srow"><span class="slabel">Auto-import upcoming events</span><div class="toggle on" id="t-auto" onclick="tog('t-auto')"><div class="toggle-knob"></div></div></div>
+        <div class="srow"><span class="slabel">Calendar events as scroll-style cards</span><div class="toggle on" id="t-calstyle" onclick="tog('t-calstyle')"><div class="toggle-knob"></div></div></div>
+        <button class="btn-goog" style="margin-top:.5rem" onclick="alert('Google Calendar OAuth connects via Supabase edge function in the full version.')">🗓 Connect Google Calendar</button>
+      </div>
+      <div class="scard">
+        <div class="scard-title">🔔 Realm Settings</div>
+        <div class="srow"><span class="slabel">Gold rain animations</span><div class="toggle on" id="t-anim" onclick="tog('t-anim')"><div class="toggle-knob"></div></div></div>
+        <div class="srow"><span class="slabel">Sound effects (coin clinks)</span><div class="toggle on" id="t-sound" onclick="tog('t-sound')"><div class="toggle-knob"></div></div></div>
+        <div class="srow"><span class="slabel">Level-up celebrations</span><div class="toggle on" id="t-lvlup" onclick="tog('t-lvlup')"><div class="toggle-knob"></div></div></div>
+        <div class="srow"><span class="slabel">Daily streak reminders</span><div class="toggle on" id="t-remind" onclick="tog('t-remind')"><div class="toggle-knob"></div></div></div>
+      </div>
+      <div class="scard">
+        <div class="scard-title">🚪 Depart the Realm</div>
+        <button class="btn-can" style="font-family:'Almendra',serif;font-size:.82rem;padding:.6rem 1.3rem" onclick="logout()">⚔ Depart from Realm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUEST MODAL -->
+<div class="modal-bg" id="qmodal">
+  <div class="modal-scroll">
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="mtitle">📜 Declare a New Quest</div>
+    <div class="fgroup"><label class="flabel">Quest Title</label><input class="finput" id="q-title" placeholder="Slay the inbox dragon..."/></div>
+    <div class="fgroup"><label class="flabel">Description</label><textarea class="finput" id="q-desc" placeholder="Describe thy noble undertaking..."></textarea></div>
+    <div class="fgroup">
+      <label class="flabel">Difficulty</label>
+      <div class="diff-sel" id="difsel">
+        <div class="dopt sel" data-d="trivial" onclick="selDiff(this)"><span class="d-em">🪵</span>Trivial<br><small>10 XP</small></div>
+        <div class="dopt" data-d="easy" onclick="selDiff(this)"><span class="d-em">🗡</span>Easy<br><small>25 XP</small></div>
+        <div class="dopt" data-d="medium" onclick="selDiff(this)"><span class="d-em">⚔</span>Medium<br><small>50 XP</small></div>
+        <div class="dopt" data-d="hard" onclick="selDiff(this)"><span class="d-em">🔱</span>Hard<br><small>100 XP</small></div>
+        <div class="dopt" data-d="boss" onclick="selDiff(this)"><span class="d-em">💀</span>Boss<br><small>200 XP</small></div>
+      </div>
+    </div>
+    <div class="fgroup"><label class="flabel">Est. Time (minutes)</label><input class="finput" id="q-time" type="number" placeholder="30" min="1"/></div>
+    <div class="fgroup" id="boss-grp" style="display:none"><label class="flabel">Boss Stages (total)</label><input class="finput" id="q-boss" type="number" placeholder="5" min="2" max="20"/></div>
+    <div class="modal-actions">
+      <button class="btn-can" onclick="closeModal()">Cancel</button>
+      <button class="btn-sub" onclick="saveQuest()">⚔ Declare!</button>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING OVERLAYS -->
+<div class="xp-popup" id="xppop"></div>
+<div class="levelup-wrap" id="lvlwrap">
+  <div class="levelup-box">
+    <div style="font-size:2.8rem;margin-bottom:.4rem">🎺</div>
+    <div class="lvl-up-title">✦ Level Up! ✦</div>
+    <div class="lvl-up-num" id="lvlnum">6</div>
+    <div class="lvl-up-sub">Thy power grows, brave hero!</div>
+    <button class="btn-lvlclose" onclick="closeLvl()">Continue thy legend →</button>
+  </div>
+</div>
+
+<script>
+const XP_MAP={trivial:10,easy:25,medium:50,hard:100,boss:200};
+const GOLD_MAP={trivial:5,easy:10,medium:20,hard:40,boss:80};
+const DIFF_ICON={trivial:'🪵',easy:'🗡',medium:'⚔',hard:'🔱',boss:'💀'};
+
+const ACHIEVEMENTS=[
+  {id:'first',name:'First Blood',icon:'⚔',check:s=>s.totalDone>=1},
+  {id:'ten',name:'Veteran',icon:'🛡',check:s=>s.totalDone>=10},
+  {id:'streak7',name:'Week Warrior',icon:'🔥',check:s=>s.streak>=7},
+  {id:'boss',name:'Dragon Slayer',icon:'🐉',check:s=>s.bossKills>=1},
+  {id:'perfect',name:'Perfect Day',icon:'⭐',check:s=>s.perfectDays>=1},
+  {id:'gold500',name:'Gold Hoarder',icon:'🪙',check:s=>s.gold>=500},
+];
+
+const LB_DATA=[
+  {name:'Lady Seraphina',initials:'LS',xp:2400,level:24},
+  {name:'Sir Roland',initials:'SR',xp:310,level:5,you:true},
+  {name:'Brother Aldric',initials:'BA',xp:1850,level:18},
+  {name:'Mage Theron',initials:'MT',xp:1200,level:12},
+  {name:'Ranger Lyssa',initials:'RL',xp:980,level:9},
+  {name:'Paladin Dusk',initials:'PD',xp:740,level:7},
+  {name:'Rogue Nyx',initials:'RN',xp:520,level:5},
+];
+
+let S={
+  xp:310,level:5,gold:450,streak:7,totalDone:12,bossKills:1,perfectDays:0,
+  quests:[
+    {id:1,title:'Defeat the Morning Emails',desc:'Clear the inbox before the sun reaches its peak',diff:'medium',xp:50,time:30,done:false,isBoss:false,bp:0,bt:1},
+    {id:2,title:'Conquer the Weekly Report',desc:'A fearsome document requiring great wit and courage',diff:'hard',xp:100,time:60,done:false,isBoss:false,bp:0,bt:1},
+    {id:3,title:'Slay the Budget Dragon',desc:'A mighty boss spanning many sessions of battle',diff:'boss',xp:200,time:180,done:false,isBoss:true,bp:2,bt:5},
+    {id:4,title:'Fetch the Morning Potion',desc:'Brew coffee and prepare for battle',diff:'trivial',xp:10,time:5,done:true,isBoss:false,bp:0,bt:1},
+    {id:5,title:'Train the New Squire',desc:'Onboard the new team member with patience',diff:'easy',xp:25,time:45,done:true,isBoss:false,bp:0,bt:1},
+  ],
+  filter:'all',editing:null,selDiff:'trivial',
+  timerOn:false,timerSec:300,timerIv:null,nid:6,
+};
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function doLogin(){
+  document.getElementById('pg-login').style.display='none';
+  const a=document.getElementById('pg-app');
+  a.style.display='flex';a.style.flexDirection='column';
+  renderBoard();renderLB();renderAchievements();updateUI();
+}
+function logout(){
+  document.getElementById('pg-app').style.display='none';
+  document.getElementById('pg-login').style.display='flex';
+}
+function toggleReg(){
+  const lf=document.getElementById('lform'),rf=document.getElementById('rform'),h=document.getElementById('login-heading');
+  if(rf.style.display==='none'){lf.style.display='none';rf.style.display='block';h.textContent='Forge Thy Legend';}
+  else{lf.style.display='block';rf.style.display='none';h.textContent='Enter the Realm';}
+}
+
+function showPage(p){
+  document.getElementById('page-board').style.display='none';
+  ['lb','settings'].forEach(x=>{
+    const el=document.getElementById('page-'+x);
+    if(el){el.classList.remove('show');}
+  });
+  ['board','lb','settings'].forEach(x=>{
+    const b=document.getElementById('nav-'+x);
+    if(b)b.classList.remove('active');
+  });
+  if(p==='board'){document.getElementById('page-board').style.display='block';}
+  else{const el=document.getElementById('page-'+p);if(el)el.classList.add('show');}
+  const nb=document.getElementById('nav-'+p);if(nb)nb.classList.add('active');
+}
+
+function filteredQuests(){
+  switch(S.filter){
+    case'active':return S.quests.filter(q=>!q.done);
+    case'boss':return S.quests.filter(q=>q.isBoss);
+    case'done':return S.quests.filter(q=>q.done);
+    default:return S.quests;
+  }
+}
+
+function renderBoard(){
+  const g=document.getElementById('qgrid');
+  const qs=filteredQuests();
+  const done=S.quests.filter(q=>q.done).length;
+  const total=S.quests.length;
+  document.getElementById('dc').textContent=done;
+  document.getElementById('dt').textContent=total;
+  document.getElementById('perfect-banner').style.display=(done===total&&total>0)?'block':'none';
+  if(!qs.length){
+    g.innerHTML='<div class="empty-board"><span class="empty-icon">📜</span><div class="empty-txt">No quests found, brave soul.<br>The board awaits thy declarations!</div></div>';
+    return;
+  }
+  g.innerHTML=qs.map(q=>`
+    <div class="qcard ${q.done?'done':''} ${q.isBoss&&!q.done?'boss-card':''}" onclick="openEdit(${q.id})">
+      ${q.isBoss&&!q.done?'<div class="boss-ribbon">⚔ Boss</div>':''}
+      <div class="qhdr">
+        <div class="qtitle">${esc(q.title)}</div>
+        <div class="diff-icon">${DIFF_ICON[q.diff]||'⚔'}</div>
+      </div>
+      ${q.desc?`<div class="qdesc">${esc(q.desc)}</div>`:''}
+      ${q.isBoss&&!q.done?`
+        <div class="boss-hp-lbl"><span>⚔ Boss HP</span><span>${q.bp}/${q.bt} stages</span></div>
+        <div class="boss-hp-track"><div class="boss-hp-fill" style="width:${Math.round((q.bt-q.bp)/q.bt*100)}%"></div></div>
+      `:''}
+      <div class="qfooter">
+        <span class="xp-tag">✦ ${q.xp} XP</span>
+        ${q.time?`<span class="time-tag">⏳ ~${q.time}min</span>`:''}
+        <div style="display:flex;gap:.3rem;">
+          ${!q.done?`<button class="btn-complete" onclick="event.stopPropagation();completeQ(${q.id})">${q.isBoss?'⚔ Strike!':'✓ Complete'}</button>`:''}
+          <button class="btn-del" onclick="event.stopPropagation();delQ(${q.id})">✕</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderLB(){
+  const sorted=[...LB_DATA].sort((a,b)=>b.xp-a.xp);
+  const ranks=['🥇','🥈','🥉'];
+  document.getElementById('lb-list').innerHTML=sorted.map((p,i)=>`
+    <div class="lb-row" style="${p.you?'border-color:var(--gold2);background:linear-gradient(155deg,#f8eed8 0%,#eedd98 100%);':''}">
+      <div class="lb-rank ${i===0?'first':i===1?'second':i===2?'third':''}">${i<3?ranks[i]:i+1}</div>
+      <div class="lb-avatar">${p.initials}</div>
+      <div class="lb-name">${p.name}${p.you?' <span style="font-size:.62rem;color:var(--gold);font-family:\'Almendra\',serif;">(you)</span>':''}</div>
+      <div class="lb-xp">✦ ${p.xp.toLocaleString()} XP</div>
+      <div class="lb-level">Lvl ${p.level}</div>
+    </div>
+  `).join('');
+}
+
+function renderAchievements(){
+  document.getElementById('achv-grid').innerHTML=ACHIEVEMENTS.map(a=>`
+    <div class="achv ${a.check(S)?'':'locked'}" title="${a.name}">
+      <span class="achv-icon">${a.icon}</span>
+      <div class="achv-name">${a.name}</div>
+    </div>
+  `).join('');
+}
+
+function completeQ(id){
+  const q=S.quests.find(x=>x.id===id);if(!q||q.done)return;
+  if(q.isBoss){
+    q.bp++;
+    if(q.bp<q.bt){
+      showXP(`⚔ Boss struck! +${Math.round(q.xp/q.bt)} XP`);
+      gainXP(Math.round(q.xp/q.bt));
+      gainGold(Math.round(GOLD_MAP[q.diff]/q.bt));
+      renderBoard();return;
+    }
+    S.bossKills++;
+  }
+  q.done=true;S.totalDone++;
+  gainXP(q.xp);gainGold(GOLD_MAP[q.diff]||20);spawnCoins(q.diff);
+  const dc=S.quests.filter(x=>x.done).length;
+  if(dc===3){setTimeout(()=>{showXP('🏆 3+ Quests! +10 Bonus XP');gainXP(10);},1400);}
+  if(dc===S.quests.length){
+    S.perfectDays++;
+    setTimeout(()=>{showXP('⚜ PERFECT DAY! +50 Bonus XP!');gainXP(50);},2200);
+  }
+  renderBoard();updateUI();renderAchievements();
+}
+
+function delQ(id){
+  if(!confirm('Remove this quest from the board?'))return;
+  S.quests=S.quests.filter(x=>x.id!==id);
+  renderBoard();updateUI();
+}
+
+function gainXP(amt){
+  S.xp+=amt;
+  const needed=S.level*100;
+  if(S.xp>=needed){S.xp-=needed;S.level++;setTimeout(()=>showLvlUp(S.level),600);}
+  updateUI();showXP('+'+amt+' XP!');
+}
+
+function gainGold(amt){S.gold+=amt;updateUI();renderAchievements();}
+
+function updateUI(){
+  const needed=S.level*100;
+  const pct=Math.min(100,Math.round(S.xp/needed*100));
+  document.getElementById('xpfill').style.width=pct+'%';
+  document.getElementById('xpcur').textContent=S.xp;
+  document.getElementById('xpmax').textContent=needed;
+  document.getElementById('lvl-badge').textContent=S.level;
+  document.getElementById('ngold').textContent=S.gold;
+  document.getElementById('nstreak').textContent=S.streak;
+  document.getElementById('s-quests').textContent=S.quests.filter(q=>q.done).length;
+  document.getElementById('s-gold').textContent=S.gold;
+  document.getElementById('s-streak').textContent=S.streak;
+  document.getElementById('streaknum').textContent=S.streak;
+  const me=LB_DATA.find(x=>x.you);
+  if(me){me.xp=S.xp+(S.level-1)*100+S.xp;me.level=S.level;}
+}
+
+let xpT=null;
+function showXP(msg){
+  const el=document.getElementById('xppop');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(xpT);xpT=setTimeout(()=>el.classList.remove('show'),2600);
+}
+
+function spawnCoins(diff){
+  const n={trivial:5,easy:10,medium:15,hard:22,boss:32}[diff]||10;
+  for(let i=0;i<n;i++){
+    setTimeout(()=>{
+      const c=document.createElement('div');c.className='coin';
+      c.style.left=(15+Math.random()*70)+'%';
+      c.style.top=(8+Math.random()*25)+'%';
+      c.style.animationDuration=(0.7+Math.random()*.9)+'s';
+      document.body.appendChild(c);setTimeout(()=>c.remove(),2000);
+    },i*55);
+  }
+}
+
+function showLvlUp(lvl){
+  document.getElementById('lvlnum').textContent=lvl;
+  document.getElementById('lvlwrap').classList.add('show');
+  spawnCoins('boss');
+}
+function closeLvl(){document.getElementById('lvlwrap').classList.remove('show');}
+
+function toggleTimer(){
+  if(S.timerOn){
+    clearInterval(S.timerIv);S.timerOn=false;S.timerSec=300;
+    document.getElementById('timer-disp').textContent='5:00';
+    document.getElementById('timer-btn').textContent='⏳ Begin Thy Quest';
+    document.getElementById('timer-sub').textContent='+15 XP upon completion';
+  }else{
+    S.timerOn=true;
+    document.getElementById('timer-btn').textContent='⏹ Abandon Quest';
+    S.timerIv=setInterval(()=>{
+      S.timerSec--;
+      const m=Math.floor(S.timerSec/60),s=S.timerSec%60;
+      document.getElementById('timer-disp').textContent=m+':'+(s<10?'0':'')+s;
+      document.getElementById('timer-sub').textContent='⏳ Focus! '+S.timerSec+'s remaining';
+      if(S.timerSec<=0){
+        clearInterval(S.timerIv);S.timerOn=false;S.timerSec=300;
+        document.getElementById('timer-disp').textContent='5:00';
+        document.getElementById('timer-btn').textContent='⏳ Begin Thy Quest';
+        document.getElementById('timer-sub').textContent='+15 XP upon completion';
+        gainXP(15);showXP('⏳ Focus complete! +15 XP!');spawnCoins('easy');
+      }
+    },1000);
+  }
+}
+
+function setFilter(f,btn){
+  S.filter=f;
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');renderBoard();
+}
+
+function openAdd(){
+  S.editing=null;S.selDiff='trivial';
+  document.getElementById('mtitle').textContent='📜 Declare a New Quest';
+  document.getElementById('q-title').value='';
+  document.getElementById('q-desc').value='';
+  document.getElementById('q-time').value='';
+  document.getElementById('q-boss').value='';
+  document.getElementById('boss-grp').style.display='none';
+  document.querySelectorAll('.dopt').forEach(o=>o.classList.toggle('sel',o.dataset.d==='trivial'));
+  document.getElementById('qmodal').classList.add('open');
+}
+
+function openEdit(id){
+  const q=S.quests.find(x=>x.id===id);if(!q)return;
+  S.editing=id;S.selDiff=q.diff;
+  document.getElementById('mtitle').textContent='📜 Edit Quest';
+  document.getElementById('q-title').value=q.title;
+  document.getElementById('q-desc').value=q.desc||'';
+  document.getElementById('q-time').value=q.time||'';
+  document.getElementById('q-boss').value=q.bt||'';
+  document.getElementById('boss-grp').style.display=q.isBoss?'block':'none';
+  document.querySelectorAll('.dopt').forEach(o=>o.classList.toggle('sel',o.dataset.d===q.diff));
+  document.getElementById('qmodal').classList.add('open');
+}
+
+function closeModal(){document.getElementById('qmodal').classList.remove('open');}
+
+function selDiff(el){
+  document.querySelectorAll('.dopt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');S.selDiff=el.dataset.d;
+  document.getElementById('boss-grp').style.display=S.selDiff==='boss'?'block':'none';
+}
+
+function saveQuest(){
+  const title=document.getElementById('q-title').value.trim();
+  if(!title){alert('A quest must have a title, brave hero!');return;}
+  const diff=S.selDiff;
+  const time=parseInt(document.getElementById('q-time').value)||0;
+  const desc=document.getElementById('q-desc').value.trim();
+  const isBoss=diff==='boss';
+  const bt=parseInt(document.getElementById('q-boss').value)||5;
+  if(S.editing){
+    const q=S.quests.find(x=>x.id===S.editing);
+    Object.assign(q,{title,desc,diff,xp:XP_MAP[diff],time,isBoss,bt});
+  }else{
+    S.quests.push({id:S.nid++,title,desc,diff,xp:XP_MAP[diff],time,done:false,isBoss,bp:0,bt});
+  }
+  closeModal();renderBoard();updateUI();
+}
+
+function tog(id){document.getElementById(id).classList.toggle('on');}
+</script>
+</div>
+</body>
+</html>
