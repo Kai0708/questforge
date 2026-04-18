@@ -31,12 +31,19 @@ export default function AuthPage() {
     setLoading(false)
   }
 
-  async function handleGoogle() {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: 'https://questforge-ashy.vercel.app' }
-    })
-  }
+async function handleGoogle() {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'https://questforge-ashy.vercel.app',
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent',
+      }
+    }
+  })
+  if (error) alert(error.message)
+}
 
   return (
     <div className="auth-page">
