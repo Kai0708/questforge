@@ -8,12 +8,17 @@ export default function App() {
   const [session, setSession] = useState(undefined)
 
   useEffect(() => {
+    // Handle OAuth callback from URL
+    supabase.auth.exchangeCodeForSession(window.location.href).catch(() => {})
+    
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session ?? null)
     })
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session ?? null)
     })
+
     return () => subscription.unsubscribe()
   }, [])
 
