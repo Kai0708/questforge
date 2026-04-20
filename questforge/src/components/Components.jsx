@@ -1,0 +1,498 @@
+// Leaderboard
+const LB_STATIC = [
+  { name: 'Lady Seraphina', initials: 'LS', xp: 2400, level: 24 },
+  { name: 'Brother Aldric', initials: 'BA', xp: 1850, level: 18 },
+  { name: 'Mage Theron', initials: 'MT', xp: 1200, level: 12 },
+  { name: 'Ranger Lyssa', initials: 'RL', xp: 980, level: 9 },
+  { name: 'Paladin Dusk', initials: 'PD', xp: 740, level: 7 },
+  { name: 'Rogue Nyx', initials: 'RN', xp: 520, level: 5 },
+]
+
+export function Leaderboard({ profile }) {
+  const me = {
+    name: profile?.display_name || 'Hero',
+    initials: (profile?.display_name || 'H').slice(0, 2).toUpperCase(),
+    xp: (profile?.xp || 0) + ((profile?.level || 1) - 1) * 100,
+    level: profile?.level || 1,
+    you: true,
+  }
+  const all = [...LB_STATIC, me].sort((a, b) => b.xp - a.xp)
+  const ranks = ['🥇', '🥈', '🥉']
+
+  return (
+    <div style={{ flex: 1, padding: '1.8rem', overflowY: 'auto' }}>
+      <div className="board-hdr">
+        <div className="board-title">{getT('hall_of_champions')}</div>
+      </div>
+      {all.map((p, i) => (
+        <div key={p.name} className={`lb-row ${p.you ? 'you' : ''}`}>
+          <div className={`lb-rank ${i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : ''}`}>
+            {i < 3 ? ranks[i] : i + 1}
+          </div>
+          <div className="lb-av">{p.initials}</div>
+          <div className="lb-name">
+            {p.name}
+            {p.you && <span style={{ fontSize: '.62rem', color: 'var(--gold)', fontFamily: "'Almendra', serif", marginLeft: '.3rem' }}>(you)</span>}
+          </div>
+          <div className="lb-xp">✦ {p.xp.toLocaleString()} XP</div>
+          <div className="lb-level">Lvl {p.level}</div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+const MEDIEVAL_LEVELS = [
+  { value: 0, label: 'Modern', desc: 'Clean, minimal UI' },
+  { value: 25, label: 'Rustic', desc: 'Wooden tavern vibes' },
+  { value: 50, label: 'Medieval', desc: 'Classic castle aesthetic' },
+  { value: 75, label: 'Dark Ages', desc: 'Gritty stone and shadow' },
+  { value: 100, label: 'Full Epic', desc: 'Maximum medieval immersion' },
+]
+
+// Text translation by level
+const TEXT_TRANSLATIONS = {
+  0: {
+    brand: 'QuestForge',
+    tagline: 'Productivity, simplified.',
+    login_heading: 'Sign In',
+    enter_realm: 'Log In',
+    begin_legend: 'Create Account',
+    new_to_realm: 'New here?',
+    forge_legend: 'Sign up',
+    already_hero: 'Have an account?',
+    return_gate: 'Sign in',
+    quest_board: 'Task Board',
+    rankings: 'Leaderboard',
+    citadel: 'Settings',
+    declare_quest: '+ New Task',
+    complete: 'Done',
+    strike: 'Progress',
+    daily_flame: 'Daily Streak',
+    days_glory: 'day streak',
+    hourglass: 'Focus Timer',
+    begin_quest: 'Start Timer',
+    abandon_quest: 'Stop Timer',
+    achievements: 'Achievements',
+    depart: 'Sign Out',
+    save_profile: 'Save',
+    perfect_day: 'Perfect Day! All tasks done! +50 Bonus XP!',
+    xp_label: 'Experience',
+    level_up_title: 'Level Up!',
+    level_up_sub: 'You leveled up!',
+    continue: 'Continue',
+    declare_new: 'New Task',
+    edit_quest: 'Edit Task',
+    difficulty_label: 'Difficulty',
+    time_label: 'Est. Time (minutes)',
+    boss_stages: 'Stages (total)',
+    cancel: 'Cancel',
+    save_changes: 'Save',
+    declare_btn: 'Create',
+    hero_profile: 'Profile',
+    hero_name: 'Display Name',
+    hero_class: 'Title',
+    realm_settings: 'App Settings',
+    thy_legend: 'Your Stats',
+    email_label: 'Email',
+    password_label: 'Password',
+    name_label: 'Name',
+    hall_of_champions: 'Leaderboard',
+  },
+  25: {
+    brand: 'Questforge',
+    tagline: 'Where work gets done.',
+    login_heading: 'Welcome Back',
+    enter_realm: 'Enter the Inn',
+    begin_legend: 'Join the Guild',
+    new_to_realm: 'New traveler?',
+    forge_legend: 'Join up',
+    already_hero: 'Know the way?',
+    return_gate: 'Sign in',
+    quest_board: 'Notice Board',
+    rankings: 'Guild Rankings',
+    citadel: 'Lodgings',
+    declare_quest: '+ Post a Job',
+    complete: 'Done',
+    strike: 'Strike!',
+    daily_flame: 'Daily Fire',
+    days_glory: 'days going',
+    hourglass: 'Work Timer',
+    begin_quest: 'Start Working',
+    abandon_quest: 'Stop',
+    achievements: 'Badges',
+    depart: 'Leave the Inn',
+    save_profile: 'Save',
+    perfect_day: 'All jobs done! +50 Bonus XP!',
+    xp_label: 'Experience',
+    level_up_title: 'Level Up!',
+    level_up_sub: 'Your skills grow, traveler!',
+    continue: 'Onward',
+    declare_new: 'New Job',
+    edit_quest: 'Edit Job',
+    difficulty_label: 'Difficulty',
+    time_label: 'Time needed (minutes)',
+    boss_stages: 'Sessions needed',
+    cancel: 'Nevermind',
+    save_changes: 'Save it',
+    declare_btn: 'Post it',
+    hero_profile: 'Traveler Profile',
+    hero_name: 'Name',
+    hero_class: 'Trade',
+    realm_settings: 'Preferences',
+    thy_legend: 'Your Record',
+    email_label: 'Email',
+    password_label: 'Password',
+    name_label: 'Your Name',
+    hall_of_champions: 'Top Travelers',
+  },
+  50: {
+    brand: '✦ Questforge ✦',
+    tagline: 'Where heroes vanquish procrastination',
+    login_heading: 'Enter the Realm',
+    enter_realm: '⚔ Enter the Realm',
+    begin_legend: '✦ Begin Thy Legend',
+    new_to_realm: 'New to the realm?',
+    forge_legend: 'Forge thy legend',
+    already_hero: 'Already a hero?',
+    return_gate: 'Return to the gate',
+    quest_board: '📜 Quest Board',
+    rankings: '⚔ Rankings',
+    citadel: '🏰 Citadel',
+    declare_quest: '+ Declare Quest',
+    complete: '✓ Complete',
+    strike: '⚔ Strike!',
+    daily_flame: '✦ Daily Flame ✦',
+    days_glory: 'days of glory',
+    hourglass: '⏳ Hourglass Focus',
+    begin_quest: '⏳ Begin Thy Quest',
+    abandon_quest: '⏹ Abandon Quest',
+    achievements: '✦ Achievements ✦',
+    depart: '⚔ Depart from Realm',
+    save_profile: 'Save Profile',
+    perfect_day: '⚜ Perfect Day! All quests conquered! +50 Bonus XP! ⚜',
+    xp_label: '✦ Experience',
+    level_up_title: '✦ Level Up! ✦',
+    level_up_sub: 'Thy power grows, brave hero!',
+    continue: 'Continue thy legend →',
+    declare_new: '📜 Declare a New Quest',
+    edit_quest: '📜 Edit Quest',
+    difficulty_label: 'Difficulty',
+    time_label: 'Est. Time (minutes)',
+    boss_stages: 'Boss Stages (total)',
+    cancel: 'Cancel',
+    save_changes: 'Save Changes',
+    declare_btn: '⚔ Declare!',
+    hero_profile: '⚔ Hero Profile',
+    hero_name: 'Hero Name',
+    hero_class: 'Title / Class',
+    realm_settings: '🔔 Realm Settings',
+    thy_legend: '📊 Thy Legend',
+    email_label: '✦ Email Scroll',
+    password_label: '🛡 Password Ward',
+    name_label: '⚔ Hero Name',
+    hall_of_champions: '⚔ Hall of Champions',
+  },
+  75: {
+    brand: '⚔ Questforge ⚔',
+    tagline: 'Where brave souls conquer their fate',
+    login_heading: 'Prove Thyself, Warrior',
+    enter_realm: '⚔ Storm the Gates',
+    begin_legend: '🩸 Swear Thy Oath',
+    new_to_realm: 'Hast thou not yet pledged?',
+    forge_legend: 'Take the oath',
+    already_hero: 'Already sworn in?',
+    return_gate: 'Return to thy post',
+    quest_board: '📜 The War Board',
+    rankings: '💀 Hall of Blood',
+    citadel: '🏰 The Fortress',
+    declare_quest: '+ Issue War Orders',
+    complete: '⚔ Vanquished!',
+    strike: '💀 Strike Down!',
+    daily_flame: '🔥 The Eternal Flame',
+    days_glory: 'days of bloodshed',
+    hourglass: '⏳ The Sand of Time',
+    begin_quest: '⚔ March to Battle',
+    abandon_quest: '🏳 Sound Retreat',
+    achievements: '🛡 Battle Honours',
+    depart: '⚔ Flee the Fortress',
+    save_profile: 'Inscribe in Stone',
+    perfect_day: '💀 ALL FOES VANQUISHED! Glorious Victory! +50 XP!',
+    xp_label: '⚔ Battle Experience',
+    level_up_title: '⚔ Thy Power Grows! ⚔',
+    level_up_sub: 'Fear thy name, all who oppose thee!',
+    continue: 'March onward →',
+    declare_new: '📜 Issue New Orders',
+    edit_quest: '📜 Rewrite the Orders',
+    difficulty_label: 'Danger Level',
+    time_label: 'Hours of battle',
+    boss_stages: 'Assaults required',
+    cancel: 'Stand Down',
+    save_changes: 'Carve in Stone',
+    declare_btn: '⚔ Sound the Horn!',
+    hero_profile: "⚔ Warrior's Dossier",
+    hero_name: 'Warrior Name',
+    hero_class: 'Rank & Title',
+    realm_settings: '🔔 Fortress Orders',
+    thy_legend: '⚔ Thy War Record',
+    email_label: '📜 Messenger Pigeon',
+    password_label: '🗝 Secret Cipher',
+    name_label: '⚔ Warrior Name',
+    hall_of_champions: '💀 Hall of the Slain',
+  },
+  100: {
+    brand: '✦ Questforge ✦',
+    tagline: 'Hither come those who wouldst vanquish procrastination',
+    login_heading: 'Prithee, Identify Thyself',
+    enter_realm: '⚔ Verily, Enter Thou the Realm',
+    begin_legend: '✦ Let Thy Legend Begin Henceforth',
+    new_to_realm: 'Dost thou not yet dwell within our realm?',
+    forge_legend: 'Forge thine own legend',
+    already_hero: 'Art thou already a hero of renown?',
+    return_gate: 'Return thee to the gate',
+    quest_board: '📜 The Royal Quest Board',
+    rankings: '⚔ The Chronicles of Glory',
+    citadel: '🏰 The Grand Citadel',
+    declare_quest: '+ Proclaim a New Quest',
+    complete: '✓ Thus It Is Done',
+    strike: '⚔ Strike Thee Down!',
+    daily_flame: '✦ The Sacred Daily Flame ✦',
+    days_glory: 'days of most glorious conquest',
+    hourglass: '⏳ The Ancient Hourglass',
+    begin_quest: '⏳ Commence Thy Noble Quest',
+    abandon_quest: '⏹ Forsake Thy Quest, Coward',
+    achievements: '✦ Scrolls of Achievement ✦',
+    depart: '⚔ Depart Henceforth from this Realm',
+    save_profile: 'Inscribe Upon the Royal Scroll',
+    perfect_day: '⚜ Hark! A Perfect Day of Most Glorious Conquest! +50 Bonus XP! ⚜',
+    xp_label: '✦ Experience of the Ages',
+    level_up_title: '✦ Hark! Thou Hast Levelled Up! ✦',
+    level_up_sub: "Thy power groweth mightily, most brave and noble hero!",
+    continue: 'Continue thine eternal legend →',
+    declare_new: '📜 Proclaim a Most Noble New Quest',
+    edit_quest: '📜 Amend the Sacred Quest Scroll',
+    difficulty_label: 'The Peril of this Endeavour',
+    time_label: 'Estimated hours of toil (in minutes)',
+    boss_stages: 'Stages of the Grand Battle',
+    cancel: 'Nay, I Shall Not',
+    save_changes: 'Inscribe These Changes',
+    declare_btn: '⚔ Proclaim it Henceforth!',
+    hero_profile: "⚔ The Hero's Sacred Profile",
+    hero_name: "The Hero's Most Noble Name",
+    hero_class: 'Title and Class of Distinction',
+    realm_settings: '🔔 Decrees of the Realm',
+    thy_legend: '📜 The Scrolls of Thy Legend',
+    email_label: '✦ Thine Email Scroll of Correspondence',
+    password_label: '🛡 Thy Most Secret Password Ward',
+    name_label: '⚔ Thy Most Noble Hero Name',
+    hall_of_champions: '⚔ The Eternal Hall of Most Glorious Champions',
+  },
+}
+
+export function getT(key) {
+  const val = parseInt(localStorage.getItem('qf_medieval') || '100')
+  const level = [0, 25, 50, 75, 100].reduce((prev, curr) => Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev)
+  return TEXT_TRANSLATIONS[level]?.[key] || TEXT_TRANSLATIONS[50][key] || key
+}
+
+export function SettingsPage({ profile, onSave, onLogout, onQuestImport }) {
+  const [name, setName] = useState_local(profile?.display_name || '')
+  const [heroClass, setHeroClass] = useState_local(profile?.hero_class || 'Adventurer')
+  const [toggles, setToggles] = useState_local({ anim: true, sound: true, lvlup: true, remind: true })
+  const [medievalness, setMedievalness] = useState_local(() => parseInt(localStorage.getItem('qf_medieval') || '100'))
+
+  function tog(k) { setToggles(t => ({ ...t, [k]: !t[k] })) }
+
+  function applyMedievalness(val) {
+    setMedievalness(val)
+    localStorage.setItem('qf_medieval', val)
+    window.dispatchEvent(new CustomEvent('medievalchange', { detail: val }))
+    const level = MEDIEVAL_LEVELS.reduce((prev, curr) => Math.abs(curr.value - val) < Math.abs(prev.value - val) ? curr : prev)
+    const root = document.documentElement
+    if (val === 0) {
+      root.style.setProperty('--parch', '#ffffff')
+      root.style.setProperty('--parch2', '#f1f5f9')
+      root.style.setProperty('--parch3', '#e2e8f0')
+      root.style.setProperty('--gold', '#6366f1')
+      root.style.setProperty('--gold2', '#818cf8')
+      root.style.setProperty('--gold3', '#a5b4fc')
+      root.style.setProperty('--ink', '#1e293b')
+      root.style.setProperty('--ink3', '#475569')
+      root.style.setProperty('--purple', '#4f46e5')
+      root.style.setProperty('--purple2', '#6366f1')
+      document.body.style.background = '#f1f5f9'
+      document.body.style.fontFamily = "'Inter', sans-serif"
+    } else if (val <= 25) {
+      root.style.setProperty('--parch', '#F5E8C0')
+      root.style.setProperty('--parch2', '#E8D498')
+      root.style.setProperty('--parch3', '#D4B870')
+      root.style.setProperty('--gold', '#b8860b')
+      root.style.setProperty('--gold2', '#DAA520')
+      root.style.setProperty('--gold3', '#FFD700')
+      root.style.setProperty('--ink', '#2a1208')
+      root.style.setProperty('--ink3', '#5a3215')
+      root.style.setProperty('--purple', '#5c2d91')
+      root.style.setProperty('--purple2', '#7c3db1')
+      document.body.style.background = '#2a1f0e'
+      document.body.style.fontFamily = "'Georgia', serif"
+    } else if (val <= 50) {
+      root.style.removeProperty('--parch')
+      root.style.removeProperty('--parch2')
+      root.style.removeProperty('--parch3')
+      root.style.removeProperty('--gold')
+      root.style.removeProperty('--gold2')
+      root.style.removeProperty('--gold3')
+      root.style.removeProperty('--ink')
+      root.style.removeProperty('--ink3')
+      root.style.removeProperty('--purple')
+      root.style.removeProperty('--purple2')
+      document.body.style.background = ''
+      document.body.style.fontFamily = ''
+    } else if (val <= 75) {
+      root.style.setProperty('--parch', '#D8C48A')
+      root.style.setProperty('--parch2', '#C8A860')
+      root.style.setProperty('--parch3', '#A88840')
+      root.style.setProperty('--gold', '#8B6518')
+      root.style.setProperty('--gold2', '#A07828')
+      root.style.setProperty('--gold3', '#C89A30')
+      root.style.setProperty('--ink', '#0a0703')
+      root.style.setProperty('--ink3', '#2a1a08')
+      document.body.style.background = '#0d0905'
+      document.body.style.fontFamily = "'Almendra', serif"
+    } else {
+      root.style.setProperty('--parch', '#C9A85C')
+      root.style.setProperty('--parch2', '#B89040')
+      root.style.setProperty('--parch3', '#9A7828')
+      root.style.setProperty('--gold', '#C8911E')
+      root.style.setProperty('--gold2', '#E8B84A')
+      root.style.setProperty('--gold3', '#F7D070')
+      root.style.setProperty('--ink', '#080603')
+      root.style.setProperty('--ink3', '#1a0e05')
+      document.body.style.background = '#080603'
+      document.body.style.fontFamily = "'Almendra Display', serif"
+    }
+  }
+
+  const currentLevel = MEDIEVAL_LEVELS.reduce((prev, curr) => Math.abs(curr.value - medievalness) < Math.abs(prev.value - medievalness) ? curr : prev)
+
+  return (
+    <div className="settings-page">
+      <div className="board-hdr"><div className="board-title">🏰 The Citadel</div></div>
+      <div className="scard">
+        <div className="scard-title">{getT('hero_profile')}</div>
+        <div className="fgroup"><label className="flabel">{getT('hero_name')}</label><input className="finput" value={name} onChange={e => setName(e.target.value)} /></div>
+        <div className="fgroup"><label className="flabel">{getT('hero_class')}</label><input className="finput" value={heroClass} onChange={e => setHeroClass(e.target.value)} /></div>
+        <button className="btn-realm" style={{ maxWidth: 180, fontSize: '.82rem', padding: '.6rem' }} onClick={() => onSave({ display_name: name, hero_class: heroClass })}>{getT('save_profile')}</button>
+      </div>
+
+      <div className="scard">
+        <div className="scard-title">⚔ Medieval-ness</div>
+        <div style={{ marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.5rem' }}>
+            <span style={{ fontFamily: "'Almendra', serif", fontSize: '.8rem', color: 'var(--ink3)' }}>Modern</span>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontFamily: "'Almendra Display', serif", fontSize: '1rem', color: 'var(--gold)', fontWeight: 700 }}>{currentLevel.label}</div>
+              <div style={{ fontFamily: "'Fondamento', cursive", fontSize: '.7rem', color: 'var(--ink3)', fontStyle: 'italic' }}>{currentLevel.desc}</div>
+            </div>
+            <span style={{ fontFamily: "'Almendra', serif", fontSize: '.8rem', color: 'var(--ink3)' }}>Full Epic</span>
+          </div>
+          <input
+            type="range" min="0" max="100" step="25"
+            value={medievalness}
+            onChange={e => applyMedievalness(parseInt(e.target.value))}
+            style={{ width: '100%', accentColor: 'var(--gold)', cursor: 'pointer', height: '6px' }}
+          />
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '.3rem' }}>
+            {MEDIEVAL_LEVELS.map(l => (
+              <span key={l.value} style={{
+                fontFamily: "'Almendra', serif", fontSize: '.6rem',
+                color: medievalness === l.value ? 'var(--gold)' : 'var(--ink3)',
+                fontWeight: medievalness === l.value ? 700 : 400,
+                cursor: 'pointer'
+              }} onClick={() => applyMedievalness(l.value)}>{l.label}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <CalendarSyncWrapper onImport={onQuestImport} />
+      <div className="scard">
+        <div className="scard-title">{getT('realm_settings')}</div>
+        {[['anim', 'Gold rain animations'], ['sound', 'Sound effects (coin clinks)'], ['lvlup', 'Level-up celebrations'], ['remind', 'Daily streak reminders']].map(([k, lbl]) => (
+          <div className="srow" key={k}>
+            <span className="slabel">{lbl}</span>
+            <div className={`toggle ${toggles[k] ? 'on' : ''}`} onClick={() => tog(k)}><div className="toggle-knob" /></div>
+          </div>
+        ))}
+      </div>
+      <div className="scard">
+        <div className="scard-title">{getT('thy_legend')}</div>
+        <div style={{ fontFamily: "'Almendra', serif", fontSize: '.85rem', color: 'var(--ink3)', lineHeight: 1.8 }}>
+          <div>✦ Level: <strong style={{ color: 'var(--gold)' }}>{profile?.level || 1}</strong></div>
+          <div>✦ Total XP earned: <strong style={{ color: 'var(--purple2)' }}>{((profile?.level || 1) - 1) * 100 + (profile?.xp || 0)}</strong></div>
+          <div>✦ Longest streak: <strong style={{ color: '#FF8C00' }}>{profile?.longest_streak || 0} days</strong></div>
+          <div>✦ Perfect days: <strong style={{ color: 'var(--gold)' }}>{profile?.perfect_days || 0}</strong></div>
+          <div>✦ Gold collected: <strong style={{ color: 'var(--gold2)' }}>{profile?.gold || 0}</strong></div>
+        </div>
+      </div>
+      <div className="scard">
+        <div className="scard-title">🚪 Depart the Realm</div>
+        <button className="btn-can" style={{ fontFamily: "'Almendra', serif", fontSize: '.82rem', padding: '.6rem 1.3rem' }} onClick={onLogout}>{getT('depart')}</button>
+      </div>
+    </div>
+  )
+}
+
+function CalendarSyncWrapper({ onImport }) {
+  const [CalendarSync, setCalendarSync] = useState_local(null)
+  useState_local(() => {
+    import('./CalendarSync.jsx').then(m => setCalendarSync(() => m.default))
+  }, [])
+  if (!CalendarSync) return null
+  return <CalendarSync onImport={onImport} />
+}
+
+// Tiny local useState wrapper so we can use hooks in this file
+import { useState as useState_local } from 'react'
+
+// LevelUpOverlay
+export function LevelUpOverlay({ level, onClose }) {
+  return (
+    <div className="lvlup-overlay">
+      <div className="lvlup-box">
+        <div style={{ fontSize: '2.8rem', marginBottom: '.4rem' }}>🎺</div>
+        <div className="lvlup-title">{getT('level_up_title')}</div>
+        <div className="lvlup-num">{level}</div>
+        <div className="lvlup-sub">{getT('level_up_sub')}</div>
+        <button className="btn-lvlclose" onClick={onClose}>{getT('continue')}</button>
+      </div>
+    </div>
+  )
+}
+
+// XpPopup
+export function XpPopup({ msg }) {
+  return <div className="xp-popup">{msg}</div>
+}
+
+// GoldCoins
+export function GoldCoins({ count }) {
+  const coins = Array.from({ length: Math.min(count, 20) }, (_, i) => ({
+    id: i,
+    left: 15 + Math.random() * 70,
+    top: 8 + Math.random() * 25,
+    dur: 0.7 + Math.random() * 0.9,
+    delay: i * 55,
+  }))
+  return (
+    <>
+      {coins.map(c => (
+        <div
+          key={c.id}
+          className="coin"
+          style={{ left: c.left + '%', top: c.top + '%', animationDuration: c.dur + 's', animationDelay: c.delay + 'ms' }}
+        />
+      ))}
+    </>
+  )
+}
