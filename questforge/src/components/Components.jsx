@@ -230,7 +230,7 @@ const TEXT_TRANSLATIONS = {
     cancel: 'Stand Down',
     save_changes: 'Carve in Stone',
     declare_btn: '⚔ Sound the Horn!',
-    hero_profile: '⚔ Warrior's Dossier',
+    hero_profile: "⚔ Warrior's Dossier",
     hero_name: 'Warrior Name',
     hero_class: 'Rank & Title',
     realm_settings: '🔔 Fortress Orders',
