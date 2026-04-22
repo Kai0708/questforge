@@ -75,6 +75,32 @@ export function getT(key) {
   return TEXT_TRANSLATIONS[level]?.[key] || TEXT_TRANSLATIONS[50][key] || key
 }
 
+// Apply saved medievalness on page load
+;(function initMedievalness() {
+  const val = parseInt(localStorage.getItem('qf_medieval') || '100')
+  const fonts = { 0:"'Inter','Segoe UI',system-ui,sans-serif", 25:"'Georgia','Palatino Linotype',serif", 50:"'Fondamento',cursive", 75:"'Almendra',serif", 100:"'Almendra Display',serif" }
+  const level = [0,25,50,75,100].reduce((p,c)=>Math.abs(c-val)<Math.abs(p-val)?c:p)
+  const font = fonts[level]
+  document.body.style.fontFamily = font
+  const root = document.documentElement
+  let styleEl = document.getElementById('qf-font-style')
+  if (!styleEl) { styleEl = document.createElement('style'); styleEl.id = 'qf-font-style'; document.head.appendChild(styleEl) }
+  styleEl.textContent = `*, .finput, .flabel, .btn-realm, .btn-can, .btn-sub, .navbtn, .brand, .board-title, .qtitle, .qdesc, .char-name, .stat-lbl, .widget-title, .scard-title, .slabel, .xp-lbl, .char-class, .ftab, .time-tag, .xp-tag { font-family: ${font} !important; }`
+  if (val === 0) {
+    root.style.setProperty('--parch','#ffffff'); root.style.setProperty('--parch2','#f1f5f9'); root.style.setProperty('--parch3','#e2e8f0')
+    root.style.setProperty('--ink','#1e293b'); root.style.setProperty('--ink3','#475569'); document.body.style.background='#f1f5f9'
+  } else if (val <= 25) {
+    root.style.setProperty('--parch','#F5E8C0'); root.style.setProperty('--parch2','#E8D498'); root.style.setProperty('--parch3','#D4B870')
+    root.style.setProperty('--ink','#1a0c04'); root.style.setProperty('--ink3','#4a3215'); document.body.style.background='#2a1f0e'
+  } else if (val <= 75) {
+    root.style.setProperty('--parch','#2E2210'); root.style.setProperty('--parch2','#241A0A'); root.style.setProperty('--parch3','#1A1208')
+    root.style.setProperty('--ink','#F0D8A0'); root.style.setProperty('--ink3','#B89A52'); document.body.style.background='#0d0905'
+  } else if (val === 100) {
+    root.style.setProperty('--parch','#1A1005'); root.style.setProperty('--parch2','#130C03'); root.style.setProperty('--parch3','#0E0902')
+    root.style.setProperty('--ink','#F7D070'); root.style.setProperty('--ink3','#C8911E'); document.body.style.background='#080603'
+  }
+})()
+
 export function SettingsPage({ profile, onSave, onLogout, onQuestImport }) {
   const [name, setName] = useState_local(profile?.display_name || '')
   const [heroClass, setHeroClass] = useState_local(profile?.hero_class || 'Adventurer')
@@ -87,35 +113,55 @@ export function SettingsPage({ profile, onSave, onLogout, onQuestImport }) {
     setMedievalness(val)
     localStorage.setItem('qf_medieval', val)
     window.dispatchEvent(new CustomEvent('medievalchange', { detail: val }))
-    const level = MEDIEVAL_LEVELS.reduce((prev, curr) => Math.abs(curr.value - val) < Math.abs(prev.value - val) ? curr : prev)
     const root = document.documentElement
+
+    // Font families per level — applied to ALL elements via CSS variable
+    const fonts = {
+      0:   "'Inter', 'Segoe UI', system-ui, sans-serif",
+      25:  "'Georgia', 'Palatino Linotype', serif",
+      50:  "'Fondamento', cursive",
+      75:  "'Almendra', serif",
+      100: "'Almendra Display', serif",
+    }
+    const font = fonts[val] || fonts[50]
+    root.style.setProperty('--app-font', font)
+    document.body.style.fontFamily = font
+
+    // Inject a global style tag for font override
+    let styleEl = document.getElementById('qf-font-style')
+    if (!styleEl) { styleEl = document.createElement('style'); styleEl.id = 'qf-font-style'; document.head.appendChild(styleEl) }
+    styleEl.textContent = `*, .finput, .flabel, .btn-realm, .btn-can, .btn-sub, .navbtn, .brand, .board-title, .qtitle, .qdesc, .char-name, .stat-lbl, .widget-title, .scard-title, .slabel, .xp-lbl, .char-class, .ftab, .time-tag, .xp-tag { font-family: ${font} !important; }`
+
     if (val === 0) {
-      root.style.setProperty('--parch', '#ffffff')
+      // Modern — light clean whites
+      root.style.setProperty('--parch',  '#ffffff')
       root.style.setProperty('--parch2', '#f1f5f9')
       root.style.setProperty('--parch3', '#e2e8f0')
-      root.style.setProperty('--gold', '#6366f1')
-      root.style.setProperty('--gold2', '#818cf8')
-      root.style.setProperty('--gold3', '#a5b4fc')
-      root.style.setProperty('--ink', '#1e293b')
-      root.style.setProperty('--ink3', '#475569')
+      root.style.setProperty('--gold',   '#6366f1')
+      root.style.setProperty('--gold2',  '#818cf8')
+      root.style.setProperty('--gold3',  '#a5b4fc')
+      root.style.setProperty('--ink',    '#1e293b')
+      root.style.setProperty('--ink2',   '#334155')
+      root.style.setProperty('--ink3',   '#475569')
       root.style.setProperty('--purple', '#4f46e5')
-      root.style.setProperty('--purple2', '#6366f1')
+      root.style.setProperty('--purple2','#6366f1')
       document.body.style.background = '#f1f5f9'
-      document.body.style.fontFamily = "'Inter', sans-serif"
     } else if (val <= 25) {
-      root.style.setProperty('--parch', '#F5E8C0')
+      // Rustic — warm parchment, readable dark ink
+      root.style.setProperty('--parch',  '#F5E8C0')
       root.style.setProperty('--parch2', '#E8D498')
       root.style.setProperty('--parch3', '#D4B870')
-      root.style.setProperty('--gold', '#b8860b')
-      root.style.setProperty('--gold2', '#DAA520')
-      root.style.setProperty('--gold3', '#FFD700')
-      root.style.setProperty('--ink', '#2a1208')
-      root.style.setProperty('--ink3', '#5a3215')
+      root.style.setProperty('--gold',   '#b8860b')
+      root.style.setProperty('--gold2',  '#DAA520')
+      root.style.setProperty('--gold3',  '#FFD700')
+      root.style.setProperty('--ink',    '#1a0c04')
+      root.style.setProperty('--ink2',   '#2a1a08')
+      root.style.setProperty('--ink3',   '#4a3215')
       root.style.setProperty('--purple', '#5c2d91')
-      root.style.setProperty('--purple2', '#7c3db1')
+      root.style.setProperty('--purple2','#7c3db1')
       document.body.style.background = '#2a1f0e'
-      document.body.style.fontFamily = "'Georgia', serif"
     } else if (val <= 50) {
+      // Medieval default — restore CSS defaults
       root.style.removeProperty('--parch')
       root.style.removeProperty('--parch2')
       root.style.removeProperty('--parch3')
@@ -123,33 +169,39 @@ export function SettingsPage({ profile, onSave, onLogout, onQuestImport }) {
       root.style.removeProperty('--gold2')
       root.style.removeProperty('--gold3')
       root.style.removeProperty('--ink')
+      root.style.removeProperty('--ink2')
       root.style.removeProperty('--ink3')
       root.style.removeProperty('--purple')
       root.style.removeProperty('--purple2')
       document.body.style.background = ''
-      document.body.style.fontFamily = ''
     } else if (val <= 75) {
-      root.style.setProperty('--parch', '#D8C48A')
-      root.style.setProperty('--parch2', '#C8A860')
-      root.style.setProperty('--parch3', '#A88840')
-      root.style.setProperty('--gold', '#8B6518')
-      root.style.setProperty('--gold2', '#A07828')
-      root.style.setProperty('--gold3', '#C89A30')
-      root.style.setProperty('--ink', '#0a0703')
-      root.style.setProperty('--ink3', '#2a1a08')
+      // Dark Ages — darker cards, but LIGHTER ink for contrast
+      root.style.setProperty('--parch',  '#2E2210')
+      root.style.setProperty('--parch2', '#241A0A')
+      root.style.setProperty('--parch3', '#1A1208')
+      root.style.setProperty('--gold',   '#C8911E')
+      root.style.setProperty('--gold2',  '#E8B84A')
+      root.style.setProperty('--gold3',  '#F7D070')
+      root.style.setProperty('--ink',    '#F0D8A0')
+      root.style.setProperty('--ink2',   '#D4B870')
+      root.style.setProperty('--ink3',   '#B89A52')
+      root.style.setProperty('--purple', '#C090FF')
+      root.style.setProperty('--purple2','#A060E0')
       document.body.style.background = '#0d0905'
-      document.body.style.fontFamily = "'Almendra', serif"
     } else {
-      root.style.setProperty('--parch', '#C9A85C')
-      root.style.setProperty('--parch2', '#B89040')
-      root.style.setProperty('--parch3', '#9A7828')
-      root.style.setProperty('--gold', '#C8911E')
-      root.style.setProperty('--gold2', '#E8B84A')
-      root.style.setProperty('--gold3', '#F7D070')
-      root.style.setProperty('--ink', '#080603')
-      root.style.setProperty('--ink3', '#1a0e05')
+      // Full Epic — near-black cards, bright golden text
+      root.style.setProperty('--parch',  '#1A1005')
+      root.style.setProperty('--parch2', '#130C03')
+      root.style.setProperty('--parch3', '#0E0902')
+      root.style.setProperty('--gold',   '#C8911E')
+      root.style.setProperty('--gold2',  '#E8B84A')
+      root.style.setProperty('--gold3',  '#F7D070')
+      root.style.setProperty('--ink',    '#F7D070')
+      root.style.setProperty('--ink2',   '#E8B84A')
+      root.style.setProperty('--ink3',   '#C8911E')
+      root.style.setProperty('--purple', '#C090FF')
+      root.style.setProperty('--purple2','#A060E0')
       document.body.style.background = '#080603'
-      document.body.style.fontFamily = "'Almendra Display', serif"
     }
   }
 
@@ -165,32 +217,42 @@ export function SettingsPage({ profile, onSave, onLogout, onQuestImport }) {
         <button className="btn-realm" style={{ maxWidth: 180, fontSize: '.82rem', padding: '.6rem' }} onClick={() => onSave({ display_name: name, hero_class: heroClass })}>{getT('save_profile')}</button>
       </div>
 
-      <div className="scard">
-        <div className="scard-title">⚔ Medieval-ness</div>
+      <div className="scard" style={{ background: 'linear-gradient(155deg,#2a1e0a 0%,#1a1208 100%)', border: '2px solid var(--gold)' }}>
+        <div className="scard-title" style={{ color: 'var(--gold3)' }}>⚔ Medieval-ness</div>
         <div style={{ marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.5rem' }}>
-            <span style={{ fontFamily: "'Almendra', serif", fontSize: '.8rem', color: 'var(--ink3)' }}>Modern</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.7rem' }}>
+            <span style={{ fontSize: '.78rem', color: '#B89A52' }}>Modern</span>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontFamily: "'Almendra Display', serif", fontSize: '1rem', color: 'var(--gold)', fontWeight: 700 }}>{currentLevel.label}</div>
-              <div style={{ fontFamily: "'Fondamento', cursive", fontSize: '.7rem', color: 'var(--ink3)', fontStyle: 'italic' }}>{currentLevel.desc}</div>
+              <div style={{ fontFamily: "'Almendra Display', serif", fontSize: '1.1rem', color: '#F7D070', fontWeight: 700 }}>{currentLevel.label}</div>
+              <div style={{ fontSize: '.7rem', color: '#B89A52', fontStyle: 'italic' }}>{currentLevel.desc}</div>
             </div>
-            <span style={{ fontFamily: "'Almendra', serif", fontSize: '.8rem', color: 'var(--ink3)' }}>Full Epic</span>
+            <span style={{ fontSize: '.78rem', color: '#B89A52' }}>Full Epic</span>
           </div>
           <input
             type="range" min="0" max="100" step="25"
             value={medievalness}
             onChange={e => applyMedievalness(parseInt(e.target.value))}
-            style={{ width: '100%', accentColor: 'var(--gold)', cursor: 'pointer', height: '6px' }}
+            style={{ width: '100%', accentColor: '#C8911E', cursor: 'pointer', height: '8px' }}
           />
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '.3rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '.5rem' }}>
             {MEDIEVAL_LEVELS.map(l => (
               <span key={l.value} style={{
-                fontFamily: "'Almendra', serif", fontSize: '.6rem',
-                color: medievalness === l.value ? 'var(--gold)' : 'var(--ink3)',
+                fontSize: '.65rem',
+                color: medievalness === l.value ? '#F7D070' : '#8B6518',
                 fontWeight: medievalness === l.value ? 700 : 400,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transition: 'color .2s',
               }} onClick={() => applyMedievalness(l.value)}>{l.label}</span>
             ))}
+          </div>
+          <div style={{ marginTop: '1rem', padding: '.6rem .8rem', background: 'rgba(200,145,30,0.12)', border: '1px solid rgba(200,145,30,0.3)', borderRadius: 2 }}>
+            <div style={{ fontSize: '.72rem', color: '#B89A52', fontStyle: 'italic' }}>
+              {medievalness === 0 && 'Clean modern interface — plain English, sans-serif fonts'}
+              {medievalness === 25 && 'Rustic tavern style — warmer language, Georgia serif'}
+              {medievalness === 50 && 'Classic medieval — Fondamento cursive, quest vocabulary'}
+              {medievalness === 75 && 'Dark Ages — Almendra serif, warrior terminology, golden text on dark'}
+              {medievalness === 100 && 'Full Epic — Almendra Display, Ye Olde English, bright gold on black'}
+            </div>
           </div>
         </div>
       </div>
