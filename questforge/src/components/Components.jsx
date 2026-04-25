@@ -325,12 +325,17 @@ export function XpPopup({ msg }) {
 
 // GoldCoins
 export function GoldCoins({ count }) {
-  const coins = Array.from({ length: Math.min(count, 20) }, (_, i) => ({
+  const total = Math.min(count * 3, 80)
+  const coins = Array.from({ length: total }, (_, i) => ({
     id: i,
-    left: 15 + Math.random() * 70,
-    top: 8 + Math.random() * 25,
-    dur: 0.7 + Math.random() * 0.9,
-    delay: i * 55,
+    left: 5 + Math.random() * 90,
+    top: -5 + Math.random() * 20,
+    dur: 1.2 + Math.random() * 1.4,
+    delay: i * 25,
+    size: 20 + Math.random() * 16,
+    rotDir: Math.random() > 0.5 ? 1 : -1,
+    rotSpeed: 180 + Math.random() * 360,
+    wobble: Math.random() * 40 - 20,
   }))
   return (
     <>
@@ -338,7 +343,16 @@ export function GoldCoins({ count }) {
         <div
           key={c.id}
           className="coin"
-          style={{ left: c.left + '%', top: c.top + '%', animationDuration: c.dur + 's', animationDelay: c.delay + 'ms' }}
+          style={{
+            left: c.left + '%',
+            top: c.top + '%',
+            width: c.size + 'px',
+            height: c.size + 'px',
+            animationDuration: c.dur + 's',
+            animationDelay: c.delay + 'ms',
+            '--rot': c.rotDir * c.rotSpeed + 'deg',
+            '--wobble': c.wobble + 'px',
+          }}
         />
       ))}
     </>
