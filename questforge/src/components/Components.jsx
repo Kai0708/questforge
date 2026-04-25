@@ -330,7 +330,7 @@ export function GoldCoins({ count }) {
     id: i,
     left: 5 + Math.random() * 90,
     top: -5 + Math.random() * 20,
-    dur: 1.2 + Math.random() * 1.4,
+    dur: 0.96 + Math.random() * 1.12,
     delay: i * 25,
     size: 20 + Math.random() * 16,
     rotDir: Math.random() > 0.5 ? 1 : -1,
