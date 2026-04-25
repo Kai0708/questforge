@@ -329,26 +329,52 @@ export function GoldCoins({ count }) {
   const coins = Array.from({ length: total }, (_, i) => ({
     id: i,
     left: 5 + Math.random() * 90,
-    size: 20 + Math.random() * 14,
-    dur: 0.9 + Math.random() * 0.5,
-    spinDur: 0.2 + Math.random() * 0.4,
-    delay: i * 20,
+    size: 22 + Math.random() * 14,
+    dur: 1400 + Math.random() * 800,
+    spinDur: 0.25 + Math.random() * 0.35,
+    delay: i * 22,
   }))
+
+  useState_local(() => {
+    coins.forEach(c => {
+      setTimeout(() => {
+        const el = document.getElementById('coin-' + c.id)
+        if (!el) return
+        const start = performance.now()
+        function frame(now) {
+          const pct = (now - start) / c.dur
+          if (pct >= 1) { el.parentElement?.remove(); return }
+          el.parentElement.style.top = (pct * 115) + 'vh'
+          requestAnimationFrame(frame)
+        }
+        requestAnimationFrame(frame)
+      }, c.delay)
+    })
+  }, [])
+
   return (
     <>
       {coins.map(c => (
         <div
           key={c.id}
-          className="coin"
+          className="coin-outer"
           style={{
             left: c.left + '%',
-            width: c.size + 'px',
-            height: c.size + 'px',
-            '--dur': c.dur + 's',
-            '--spin-dur': c.spinDur + 's',
-            animationDelay: c.delay + 'ms, ' + c.delay + 'ms',
+            top: '-5vh',
+            animationDuration: c.dur + 'ms',
+            animationDelay: c.delay + 'ms',
           }}
-        />
+        >
+          <div
+            id={'coin-' + c.id}
+            className="coin-inner"
+            style={{
+              width: c.size + 'px',
+              height: c.size + 'px',
+              animationDuration: c.spinDur + 's',
+            }}
+          />
+        </div>
       ))}
     </>
   )
