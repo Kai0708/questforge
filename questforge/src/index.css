@@ -472,8 +472,8 @@ textarea.finput { resize: vertical; min-height: 55px; margin-bottom: 0; }
 }
 
 @keyframes coinfall {
-  0%   { opacity: 1; transform: translate3d(0, 0, 0) rotate(0deg); }
-  100% { opacity: 0; transform: translate3d(var(--wobble, 0px), 110vh, 0) rotate(var(--rot, 360deg)); }
+  0%   { opacity: 1; transform: translateY(0)     rotate(0deg);                    }
+  100% { opacity: 0; transform: translateY(110vh)  rotate(var(--rot, 360deg));      }
 }
 /* ── LEVEL UP ── */
 .lvlup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.88); z-index: 3000; display: flex; align-items: center; justify-content: center; }
