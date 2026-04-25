@@ -331,8 +331,8 @@ export function GoldCoins({ count }) {
     left: 5 + Math.random() * 90,
     size: 20 + Math.random() * 14,
     dur: 0.9 + Math.random() * 0.5,
-    delay: i * 30,
-    rot: (Math.random() > 0.5 ? 1 : -1) * (180 + Math.random() * 360),
+    delay: i * 20,
+    rot: (Math.random() > 0.5 ? 1 : -1) * (270 + Math.random() * 450),
     wobble: Math.random() * 60 - 30,
   }))
   return (
