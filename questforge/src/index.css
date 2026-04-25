@@ -467,11 +467,11 @@ textarea.finput { resize: vertical; min-height: 55px; margin-bottom: 0; }
   animation: coinfall var(--dur, 1.4s) ease-in forwards;
 }
 @keyframes coinfall {
-  0%   { transform: translateY(0px) translateX(0px) rotateY(0deg) rotateZ(0deg); opacity: 1; }
-  20%  { transform: translateY(60px) translateX(calc(var(--wobble, 0px) * 0.3)) rotateY(90deg) rotateZ(15deg); opacity: 1; }
-  50%  { transform: translateY(160px) translateX(var(--wobble, 0px)) rotateY(180deg) rotateZ(30deg); opacity: 0.9; }
-  80%  { transform: translateY(260px) translateX(calc(var(--wobble, 0px) * 0.6)) rotateY(270deg) rotateZ(45deg); opacity: 0.5; }
-  100% { transform: translateY(380px) translateX(0px) rotateY(var(--rot, 360deg)) rotateZ(60deg); opacity: 0; }
+  0%   { transform: translateY(-20px) translateX(0px) rotateY(0deg) rotateZ(0deg); opacity: 1; }
+  20%  { transform: translateY(20vh) translateX(calc(var(--wobble, 0px) * 0.3)) rotateY(90deg) rotateZ(15deg); opacity: 1; }
+  50%  { transform: translateY(50vh) translateX(var(--wobble, 0px)) rotateY(180deg) rotateZ(30deg); opacity: 0.9; }
+  80%  { transform: translateY(80vh) translateX(calc(var(--wobble, 0px) * 0.6)) rotateY(270deg) rotateZ(45deg); opacity: 0.5; }
+  100% { transform: translateY(105vh) translateX(0px) rotateY(var(--rot, 360deg)) rotateZ(60deg); opacity: 0; }
 }
 /* ── LEVEL UP ── */
 .lvlup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.88); z-index: 3000; display: flex; align-items: center; justify-content: center; }
