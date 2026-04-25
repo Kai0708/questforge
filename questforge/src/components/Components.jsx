@@ -333,7 +333,6 @@ export function GoldCoins({ count }) {
     dur: 0.9 + Math.random() * 0.5,
     delay: i * 20,
     rot: (Math.random() > 0.5 ? 1 : -1) * (270 + Math.random() * 450),
-    wobble: Math.random() * 60 - 30,
   }))
   return (
     <>
@@ -349,7 +348,6 @@ export function GoldCoins({ count }) {
             animationDuration: c.dur + 's',
             animationDelay: c.delay + 'ms',
             '--rot': c.rot + 'deg',
-            '--wobble': c.wobble + 'px',
           }}
         />
       ))}
