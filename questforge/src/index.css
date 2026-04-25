@@ -458,14 +458,21 @@ textarea.finput { resize: vertical; min-height: 55px; margin-bottom: 0; }
 
 /* ── COINS ── */
 .coin {
-  position: fixed; width: 14px; height: 14px;
-  background: radial-gradient(circle at 35% 35%, var(--gold3), var(--gold));
-  border-radius: 50%; border: 1.5px solid #7A5A10;
+  position: fixed;
+  background: radial-gradient(circle at 30% 30%, #FFE566, var(--gold2) 40%, var(--gold) 70%, #8B6518);
+  border-radius: 50%;
+  border: 2px solid #7A5A10;
+  box-shadow: inset -3px -3px 6px rgba(0,0,0,0.3), inset 2px 2px 4px rgba(255,220,100,0.6), 0 2px 6px rgba(0,0,0,0.4);
   z-index: 1999; pointer-events: none;
-  animation: coinfall 1.4s ease-in forwards;
+  animation: coinfall var(--dur, 1.4s) ease-in forwards;
 }
-@keyframes coinfall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(280px) rotate(720deg); opacity: 0; } }
-
+@keyframes coinfall {
+  0%   { transform: translateY(0px) translateX(0px) rotateY(0deg) rotateZ(0deg); opacity: 1; }
+  20%  { transform: translateY(60px) translateX(calc(var(--wobble, 0px) * 0.3)) rotateY(90deg) rotateZ(15deg); opacity: 1; }
+  50%  { transform: translateY(160px) translateX(var(--wobble, 0px)) rotateY(180deg) rotateZ(30deg); opacity: 0.9; }
+  80%  { transform: translateY(260px) translateX(calc(var(--wobble, 0px) * 0.6)) rotateY(270deg) rotateZ(45deg); opacity: 0.5; }
+  100% { transform: translateY(380px) translateX(0px) rotateY(var(--rot, 360deg)) rotateZ(60deg); opacity: 0; }
+}
 /* ── LEVEL UP ── */
 .lvlup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.88); z-index: 3000; display: flex; align-items: center; justify-content: center; }
 .lvlup-box { background: linear-gradient(155deg, var(--parch) 0%, var(--parch2) 100%); border: 4px solid var(--gold); border-radius: 5px; padding: 2.8rem 3.5rem; text-align: center; box-shadow: 0 0 60px rgba(200,145,30,.45); animation: lvlpop .4s cubic-bezier(.175,.885,.32,1.275); }
