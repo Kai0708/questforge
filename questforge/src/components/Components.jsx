@@ -335,7 +335,7 @@ export function GoldCoins({ count }) {
     delay: i * 22,
   }))
 
-  useState_local(() => {
+useState_local(() => {
     coins.forEach(c => {
       setTimeout(() => {
         const el = document.getElementById('coin-' + c.id)
