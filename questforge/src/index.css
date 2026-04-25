@@ -460,35 +460,30 @@ textarea.finput { resize: vertical; min-height: 55px; margin-bottom: 0; }
 /* ── COIN OUTER: handles falling + opacity only ── */
 .coin-outer {
   position: fixed;
-  top: -40px;
   z-index: 1999;
   pointer-events: none;
-  will-change: transform, opacity;
-  animation: coinFall linear forwards;
+  will-change: opacity;
+  animation: coinFade linear forwards;
   opacity: 0;
 }
 
-@keyframes coinFall {
-  0%   { transform: translateY(0);      opacity: 1;    }
-  70%  { transform: translateY(70vh);   opacity: 0.8;  }
-  90%  { transform: translateY(95vh);   opacity: 0.25; }
-  100% { transform: translateY(115vh);  opacity: 0;    }
+@keyframes coinFade {
+  0%   { opacity: 1;    }
+  70%  { opacity: 0.8;  }
+  90%  { opacity: 0.25; }
+  100% { opacity: 0;    }
 }
 
-/* ── COIN INNER: handles spinning only, never moves ── */
 .coin-inner {
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, #FFE566, var(--gold2) 40%, var(--gold) 70%, #8B6518);
   border: 2px solid #7A5A10;
-  box-shadow:
-    inset -3px -3px 6px rgba(0,0,0,0.35),
-    inset 2px 2px 5px rgba(255,230,100,0.6),
-    0 3px 8px rgba(0,0,0,0.4);
+  box-shadow: inset -3px -3px 6px rgba(0,0,0,0.35), inset 2px 2px 5px rgba(255,230,100,0.6), 0 3px 8px rgba(0,0,0,0.4);
   will-change: transform;
   animation: coinSpin linear infinite;
 }
 
 @keyframes coinSpin {
-  0%   { transform: rotate(0deg);   }
-  100% { transform: rotate(360deg); }
+  0%   { transform: rotateY(0deg);   }
+  100% { transform: rotateY(360deg); }
 }
