@@ -458,29 +458,11 @@ textarea.finput { resize: vertical; min-height: 55px; margin-bottom: 0; }
 
 /* ── COINS ── */
 /* ── COIN OUTER: handles falling + opacity only ── */
-.coin-outer {
-  position: fixed;
-  z-index: 1999;
-  pointer-events: none;
-  will-change: opacity;
-  animation: coinFade linear forwards;
-  opacity: 0;
-}
-
-@keyframes coinFade {
-  0%   { opacity: 1;    }
-  70%  { opacity: 0.8;  }
-  90%  { opacity: 0.25; }
-  100% { opacity: 0;    }
-}
-
-.coin-inner {
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #FFE566, var(--gold2) 40%, var(--gold) 70%, #8B6518);
-  border: 2px solid #7A5A10;
-  box-shadow: inset -3px -3px 6px rgba(0,0,0,0.35), inset 2px 2px 5px rgba(255,230,100,0.6), 0 3px 8px rgba(0,0,0,0.4);
-  will-change: transform;
-  animation: coinSpin linear infinite;
+@keyframes coinFall {
+  0%   { transform: translateY(0);      opacity: 1;   }
+  70%  { transform: translateY(70vh);   opacity: 0.8; }
+  90%  { transform: translateY(95vh);   opacity: 0.25;}
+  100% { transform: translateY(110vh);  opacity: 0;   }
 }
 
 @keyframes coinSpin {
