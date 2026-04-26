@@ -323,58 +323,71 @@ export function XpPopup({ msg }) {
   return <div className="xp-popup">{msg}</div>
 }
 
-// GoldCoins
+// GoldCoins — pure CSS only, no DOM manipulation, no requestAnimationFrame
 export function GoldCoins({ count }) {
   const total = Math.min(count * 2, 50)
   const coins = Array.from({ length: total }, (_, i) => ({
     id: i,
     left: 5 + Math.random() * 90,
     size: 22 + Math.random() * 14,
-    dur: 1400 + Math.random() * 800,
-    spinDur: 0.25 + Math.random() * 0.35,
-    delay: i * 22,
+    fallDur: (1.4 + Math.random() * 0.8).toFixed(2),
+    spinDur: (0.2 + Math.random() * 0.3).toFixed(2),
+    delay: (i * 0.022).toFixed(3),
   }))
-
-useState_local(() => {
-    coins.forEach(c => {
-      setTimeout(() => {
-        const el = document.getElementById('coin-' + c.id)
-        if (!el) return
-        const start = performance.now()
-        function frame(now) {
-          const pct = (now - start) / c.dur
-          if (pct >= 1) { el.parentElement?.remove(); return }
-          el.parentElement.style.top = (pct * 115) + 'vh'
-          requestAnimationFrame(frame)
-        }
-        requestAnimationFrame(frame)
-      }, c.delay)
-    })
-  }, [])
-
   return (
     <>
       {coins.map(c => (
         <div
           key={c.id}
-          className="coin-outer"
+          style={{
+            position: 'fixed',
+            left: c.left + '%',
+            top: 0,
+            width: c.size + 'px',
+            height: c.size + 'px',
+            zIndex: 1999,
+            pointerEvents: 'none',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle at 30% 30%, #FFE566, #E8B84A 40%, #C8911E 70%, #7A5A10)',
+            border: '2px solid #7A5A10',
+            boxShadow: 'inset -3px -3px 6px rgba(0,0,0,0.35), inset 2px 2px 5px rgba(255,230,100,0.6)',
+            opacity: 0,
+            animation: `coinFall ${c.fallDur}s linear ${c.delay}s forwards, coinSpin ${c.spinDur}s linear ${c.delay}s infinite`,
+          }}
+        />
+      ))}
+    </>
+  )
+}) {
+  const total = Math.min(count * 3, 80)
+  const coins = Array.from({ length: total }, (_, i) => ({
+    id: i,
+    left: 5 + Math.random() * 90,
+    top: -5 + Math.random() * 20,
+    dur: 1.2 + Math.random() * 1.4,
+    delay: i * 25,
+    size: 20 + Math.random() * 16,
+    rotDir: Math.random() > 0.5 ? 1 : -1,
+    rotSpeed: 180 + Math.random() * 360,
+    wobble: Math.random() * 40 - 20,
+  }))
+  return (
+    <>
+      {coins.map(c => (
+        <div
+          key={c.id}
+          className="coin"
           style={{
             left: c.left + '%',
-            top: '-5vh',
-            animationDuration: c.dur + 'ms',
+            top: c.top + '%',
+            width: c.size + 'px',
+            height: c.size + 'px',
+            animationDuration: c.dur + 's',
             animationDelay: c.delay + 'ms',
+            '--rot': c.rotDir * c.rotSpeed + 'deg',
+            '--wobble': c.wobble + 'px',
           }}
-        >
-          <div
-            id={'coin-' + c.id}
-            className="coin-inner"
-            style={{
-              width: c.size + 'px',
-              height: c.size + 'px',
-              animationDuration: c.spinDur + 's',
-            }}
-          />
-        </div>
+        />
       ))}
     </>
   )
