@@ -371,12 +371,7 @@ export function GoldCoins({ count }) {
             background: 'radial-gradient(circle at 30% 30%, #FFE566, #E8B84A 40%, #C8911E 70%, #7A5A10)',
             border: '2px solid #7A5A10',
             boxShadow: 'inset -3px -3px 6px rgba(0,0,0,0.35), inset 2px 2px 5px rgba(255,230,100,0.6)',
-            animationName: 'qfCoinFall, qfCoinSpin',
-            animationDuration: `${c.fallDur}s, ${c.spinDur}s`,
-            animationTimingFunction: 'linear, linear',
-            animationDelay: `${c.delay}s, ${c.delay}s`,
-            animationFillMode: 'forwards, none',
-            animationIterationCount: '1, infinite',
+            animation: `qfCoinFall ${c.fallDur}s linear ${c.delay}s 1 forwards, qfCoinSpin ${c.spinDur}s linear ${c.delay}s infinite`,
             opacity: 0,
           }}
         />
