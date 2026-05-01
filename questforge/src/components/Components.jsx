@@ -1,13 +1,4 @@
 // Leaderboard
-const LB_STATIC = [
-  { name: 'Lady Seraphina', initials: 'LS', xp: 2400, level: 24 },
-  { name: 'Brother Aldric', initials: 'BA', xp: 1850, level: 18 },
-  { name: 'Mage Theron', initials: 'MT', xp: 1200, level: 12 },
-  { name: 'Ranger Lyssa', initials: 'RL', xp: 980, level: 9 },
-  { name: 'Paladin Dusk', initials: 'PD', xp: 740, level: 7 },
-  { name: 'Rogue Nyx', initials: 'RN', xp: 520, level: 5 },
-]
-
 export function Leaderboard({ profile }) {
   const me = {
     name: profile?.display_name || 'Hero',
@@ -16,7 +7,7 @@ export function Leaderboard({ profile }) {
     level: profile?.level || 1,
     you: true,
   }
-  const all = [...LB_STATIC, me].sort((a, b) => b.xp - a.xp)
+  const all = [me]
   const ranks = ['🥇', '🥈', '🥉']
 
   return (
@@ -101,11 +92,17 @@ export function getT(key) {
   }
 })()
 
-export function SettingsPage({ profile, onSave, onLogout, onQuestImport }) {
+export function SettingsPage({ profile, onSave, onLogout, onQuestImport, debugUnlocked, onDebugUnlock, onDebugSave }) {
   const [name, setName] = useState_local(profile?.display_name || '')
   const [heroClass, setHeroClass] = useState_local(profile?.hero_class || 'Adventurer')
   const [toggles, setToggles] = useState_local({ anim: true, sound: true, lvlup: true, remind: true })
   const [medievalness, setMedievalness] = useState_local(() => parseInt(localStorage.getItem('qf_medieval') || '100'))
+  const [debugCode, setDebugCode] = useState_local('')
+  const [debugStats, setDebugStats] = useState_local({
+    xp: profile?.xp || 0,
+    coins: profile?.gold || 0,
+    streakDays: profile?.current_streak || 0,
+  })
 
   function tog(k) { setToggles(t => ({ ...t, [k]: !t[k] })) }
 
@@ -259,6 +256,31 @@ export function SettingsPage({ profile, onSave, onLogout, onQuestImport }) {
 
       <CalendarSyncWrapper onImport={onQuestImport} />
       <div className="scard">
+        <div className="scard-title">🛠 Debug Access</div>
+        {!debugUnlocked ? (
+          <>
+            <div className="fgroup"><label className="flabel">Access Code</label><input className="finput" value={debugCode} onChange={e => setDebugCode(e.target.value)} placeholder="Enter debug code" /></div>
+            <button className="btn-realm" style={{ maxWidth: 220, fontSize: '.78rem', padding: '.55rem .9rem' }} onClick={() => {
+              const ok = onDebugUnlock?.(debugCode)
+              if (!ok) alert('Invalid code')
+              setDebugCode('')
+            }}>Unlock Debug Mode</button>
+          </>
+        ) : (
+          <>
+            <div style={{ fontSize: '.75rem', color: 'var(--ink3)', marginBottom: '.65rem' }}>Debug mode active. Set values and save.</div>
+            <div className="fgroup"><label className="flabel">XP</label><input type="number" className="finput" value={debugStats.xp} onChange={e => setDebugStats(s => ({ ...s, xp: e.target.value }))} /></div>
+            <div className="fgroup"><label className="flabel">Coins</label><input type="number" className="finput" value={debugStats.coins} onChange={e => setDebugStats(s => ({ ...s, coins: e.target.value }))} /></div>
+            <div className="fgroup"><label className="flabel">Streak Days</label><input type="number" className="finput" value={debugStats.streakDays} onChange={e => setDebugStats(s => ({ ...s, streakDays: e.target.value }))} /></div>
+            <button className="btn-realm" style={{ maxWidth: 200, fontSize: '.78rem', padding: '.55rem .9rem' }} onClick={() => onDebugSave?.({
+              xp: Number(debugStats.xp),
+              coins: Number(debugStats.coins),
+              streakDays: Number(debugStats.streakDays),
+            })}>Apply Debug Stats</button>
+          </>
+        )}
+      </div>
+      <div className="scard">
         <div className="scard-title">{getT('realm_settings')}</div>
         {[['anim', 'Gold rain animations'], ['sound', 'Sound effects (coin clinks)'], ['lvlup', 'Level-up celebrations'], ['remind', 'Daily streak reminders']].map(([k, lbl]) => (
           <div className="srow" key={k}>
@@ -324,7 +346,7 @@ export function XpPopup({ msg }) {
 }
 
 // GoldCoins — fall uses top (not transform) so spin transform never conflicts
-export function GoldCoins({ count }) {
+export function GoldCoins({ count, onDone }) {
   if (!document.getElementById('qf-coin-style')) {
     const s = document.createElement('style')
     s.id = 'qf-coin-style'
@@ -344,14 +366,22 @@ export function GoldCoins({ count }) {
   }
 
   const total = Math.min(count * 2, 50)
-  const coins = Array.from({ length: total }, (_, i) => ({
+  const [coins, setCoins] = useState_local(() => Array.from({ length: total }, (_, i) => ({
     id: i,
     left: 5 + Math.random() * 90,
     size: 22 + Math.random() * 14,
     fallDur: (1.6 + Math.random() * 0.8).toFixed(2),
     spinDur: (0.25 + Math.random() * 0.3).toFixed(2),
     delay: (i * 0.03).toFixed(3),
-  }))
+  })))
+
+  function removeCoin(id) {
+    setCoins(prev => {
+      const next = prev.filter(c => c.id !== id)
+      if (next.length === 0) onDone?.()
+      return next
+    })
+  }
 
   return (
     <>
@@ -372,6 +402,9 @@ export function GoldCoins({ count }) {
             boxShadow: 'inset -3px -3px 6px rgba(0,0,0,0.35), inset 2px 2px 5px rgba(255,230,100,0.6)',
             animation: `qfCoinFall ${c.fallDur}s linear ${c.delay}s 1 forwards, qfCoinSpin ${c.spinDur}s linear ${c.delay}s infinite`,
             opacity: 0,
+          }}
+          onAnimationEnd={(e) => {
+            if (e.animationName === 'qfCoinFall') removeCoin(c.id)
           }}
         />
       ))}
