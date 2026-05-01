@@ -27,6 +27,7 @@ export default function Dashboard({ session }) {
   const [timerSec, setTimerSec] = useState(300)
   const [timerOn, setTimerOn] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [debugUnlocked, setDebugUnlocked] = useState(() => localStorage.getItem('qf_debug_mode') === '1')
 
   // Load profile and quests
   useEffect(() => {
@@ -203,13 +204,37 @@ export default function Dashboard({ session }) {
     const id = Date.now()
     const count = { trivial: 5, easy: 10, medium: 15, hard: 22, boss: 32 }[diff] || 10
     setCoinBursts(b => [...b, { id, count }])
-    setTimeout(() => setCoinBursts(b => b.filter(x => x.id !== id)), 2000)
   }
 
   async function updateProfile(updates) {
     await supabase.from('profiles').update(updates).eq('id', session.user.id)
     setProfile(p => ({ ...p, ...updates }))
     showXp('Profile saved!')
+  }
+
+  async function applyDebugStats(stats) {
+    const updates = {}
+    if (typeof stats.xp === 'number' && Number.isFinite(stats.xp)) updates.xp = Math.max(0, Math.floor(stats.xp))
+    if (typeof stats.coins === 'number' && Number.isFinite(stats.coins)) updates.gold = Math.max(0, Math.floor(stats.coins))
+    if (typeof stats.streakDays === 'number' && Number.isFinite(stats.streakDays)) {
+      const streak = Math.max(0, Math.floor(stats.streakDays))
+      updates.current_streak = streak
+      updates.longest_streak = Math.max(streak, profile?.longest_streak || 0)
+    }
+    if (!Object.keys(updates).length) return
+    await supabase.from('profiles').update(updates).eq('id', session.user.id)
+    setProfile(p => ({ ...p, ...updates }))
+    showXp('Debug stats applied.')
+  }
+
+  function unlockDebug(code) {
+    if (code.trim().toLowerCase() === 'questforge-admin') {
+      localStorage.setItem('qf_debug_mode', '1')
+      setDebugUnlocked(true)
+      showXp('Debug mode unlocked.')
+      return true
+    }
+    return false
   }
 
   function openAdd() { setEditingQuest(null); setModalOpen(true) }
@@ -263,7 +288,7 @@ export default function Dashboard({ session }) {
         )}
         {page === 'lb' && <Leaderboard profile={profile} />}
         {page === 'friends' && <FriendsPage profile={profile} />}
-        {page === 'settings' && <SettingsPage profile={profile} onSave={updateProfile} onLogout={() => supabase.auth.signOut()} onQuestImport={(quest) => { if (quest) setQuests(q => [quest, ...q]) }} />}
+        {page === 'settings' && <SettingsPage profile={profile} debugUnlocked={debugUnlocked} onDebugUnlock={unlockDebug} onDebugSave={applyDebugStats} onSave={updateProfile} onLogout={() => supabase.auth.signOut()} onQuestImport={(quest) => { if (quest) setQuests(q => [quest, ...q]) }} />}
       </div>
 
       {modalOpen && (
@@ -279,7 +304,7 @@ export default function Dashboard({ session }) {
       )}
 
       {xpMessages.map(m => <XpPopup key={m.id} msg={m.msg} />)}
-      {coinBursts.map(b => <GoldCoins key={b.id} count={b.count} />)}
+      {coinBursts.map(b => <GoldCoins key={b.id} count={b.count} onDone={() => setCoinBursts(prev => prev.filter(x => x.id !== b.id))} />)}
     </>
   )
 }
