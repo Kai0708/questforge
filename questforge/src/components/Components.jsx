@@ -323,18 +323,17 @@ export function XpPopup({ msg }) {
   return <div className="xp-popup">{msg}</div>
 }
 
-// GoldCoins — self-contained with injected keyframes, guaranteed to work
+// GoldCoins — fall uses top (not transform) so spin transform never conflicts
 export function GoldCoins({ count }) {
-  // Inject keyframes once into the document
   if (!document.getElementById('qf-coin-style')) {
     const s = document.createElement('style')
     s.id = 'qf-coin-style'
     s.textContent = `
       @keyframes qfCoinFall {
-        0%   { transform: translateY(0vh);   opacity: 1;    }
-        75%  { transform: translateY(80vh);  opacity: 0.6;  }
-        95%  { transform: translateY(100vh); opacity: 0.25; }
-        100% { transform: translateY(110vh); opacity: 0;    }
+        0%   { top: -40px;   opacity: 1;    }
+        75%  { top: 75vh;    opacity: 0.7;  }
+        95%  { top: 100vh;   opacity: 0.25; }
+        100% { top: 110vh;   opacity: 0;    }
       }
       @keyframes qfCoinSpin {
         0%   { transform: rotateY(0deg);   }
@@ -349,7 +348,7 @@ export function GoldCoins({ count }) {
     id: i,
     left: 5 + Math.random() * 90,
     size: 22 + Math.random() * 14,
-    fallDur: (1.4 + Math.random() * 0.8).toFixed(2),
+    fallDur: (1.6 + Math.random() * 0.8).toFixed(2),
     spinDur: (0.25 + Math.random() * 0.3).toFixed(2),
     delay: (i * 0.03).toFixed(3),
   }))
@@ -362,7 +361,7 @@ export function GoldCoins({ count }) {
           style={{
             position: 'fixed',
             left: c.left + '%',
-            top: 0,
+            top: '-40px',
             width: c.size + 'px',
             height: c.size + 'px',
             zIndex: 1999,
