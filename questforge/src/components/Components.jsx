@@ -330,10 +330,10 @@ export function GoldCoins({ count }) {
     s.id = 'qf-coin-style'
     s.textContent = `
       @keyframes qfCoinFall {
-        0%   { top: -40px;   opacity: 1;    }
-        75%  { top: 75vh;    opacity: 0.7;  }
-        95%  { top: 100vh;   opacity: 0.25; }
-        100% { top: 110vh;   opacity: 0;    }
+        0%   { top: -40px;  opacity: 1; }
+        85%  { top: 85vh;   opacity: 1; }
+        97%  { top: 100vh;  opacity: 0.3; }
+        100% { top: 110vh;  opacity: 0; }
       }
       @keyframes qfCoinSpin {
         0%   { transform: rotateY(0deg);   }
