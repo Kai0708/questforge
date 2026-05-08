@@ -15,7 +15,7 @@ export default function TopNav({ profile, page, setPage, onLogout }) {
       <div className="brand">{getT('brand')}</div>
       <div className="navlinks">
         <button className={`navbtn ${page === 'board' ? 'active' : ''}`} onClick={() => setPage('board')}>{getT('quest_board')}</button>
-        <button className={`navbtn ${page === 'friends' ? 'active' : ''}`} onClick={() => setPage('friends')}>⚔ Fellowship</button>
+        <button className={`navbtn ${page === 'friends' ? 'active' : ''}`} onClick={() => setPage('friends')}>{getT('fellowship')}</button>
         <button className={`navbtn ${page === 'lb' ? 'active' : ''}`} onClick={() => setPage('lb')}>{getT('rankings')}</button>
         <button className={`navbtn ${page === 'settings' ? 'active' : ''}`} onClick={() => setPage('settings')}>{getT('citadel')}</button>
       </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getT } from './Components.jsx'
+import { getT, getThemeText } from './Components.jsx'
 
 const DIFFS = [
   { key: 'trivial', icon: '🪵', label: 'Trivial', xp: 10 },
@@ -31,7 +31,7 @@ export default function QuestModal({ quest, onSave, onClose }) {
   }, [quest])
 
   function handleSave() {
-    if (!title.trim()) { alert('A quest must have a title!'); return }
+    if (!title.trim()) { alert(getThemeText('A task must have a title!', 'A quest must have a title!', 'Verily, a quest must bear a title!')); return }
     const isBoss = diff === 'boss'
     onSave({
       title: title.trim(),
@@ -51,12 +51,12 @@ export default function QuestModal({ quest, onSave, onClose }) {
         <div className="modal-title">{quest ? getT('edit_quest') : getT('declare_new')}</div>
 
         <div className="fgroup">
-          <label className="flabel">Quest Title</label>
-          <input className="finput" type="text" placeholder="Slay the inbox dragon..." value={title} onChange={e => setTitle(e.target.value)} />
+          <label className="flabel">{getThemeText('Task Title', 'Quest Title', 'Quest Title')}</label>
+          <input className="finput" type="text" placeholder={getThemeText('Finish quarterly report...', 'Slay the inbox dragon...', 'Smite the dread inbox wyrm...')} value={title} onChange={e => setTitle(e.target.value)} />
         </div>
         <div className="fgroup">
-          <label className="flabel">Description</label>
-          <textarea className="finput" placeholder="Describe thy noble undertaking..." value={desc} onChange={e => setDesc(e.target.value)} />
+          <label className="flabel">{getThemeText('Description', 'Description', 'Chronicle')}</label>
+          <textarea className="finput" placeholder={getThemeText('Describe the task...', 'Describe thy noble undertaking...', 'Pray describe thine noble undertaking...')} value={desc} onChange={e => setDesc(e.target.value)} />
         </div>
         <div className="fgroup">
           <label className="flabel">{getT('difficulty_label')}</label>
