@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getT } from './Components.jsx'
+import { getT, getThemeText } from './Components.jsx'
 
 const DIFF_ICON = { trivial: '🪵', easy: '🗡', medium: '⚔', hard: '🔱', boss: '💀' }
 
@@ -41,7 +41,7 @@ export default function QuestBoard({ quests, allQuests, filter, setFilter, doneC
         {quests.length === 0 ? (
           <div className="empty-board">
             <span className="empty-icon">📜</span>
-            <div className="empty-txt">No quests found, brave soul.<br />The board awaits thy declarations!</div>
+            <div className="empty-txt">{getThemeText('No tasks found.\nCreate your first one!', 'No quests found, brave soul.\nThe board awaits thy declarations!', 'No quests found, noble soul.\nThe royal board awaiteth thy proclamations!').split("\n").map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}</div>
           </div>
         ) : quests.map(q => (
           <div

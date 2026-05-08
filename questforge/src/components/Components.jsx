@@ -60,6 +60,14 @@ const TEXT_TRANSLATIONS = {
   },
 }
 
+
+export function getThemeText(modernText, medievalText, epicText = medievalText) {
+  const val = parseInt(localStorage.getItem('qf_medieval') || '100')
+  if (val >= 100) return epicText
+  if (val >= 50) return medievalText
+  return modernText
+}
+
 export function getT(key) {
   const val = parseInt(localStorage.getItem('qf_medieval') || '100')
   const level = [0, 25, 50, 75, 100].reduce((prev, curr) => Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev)
