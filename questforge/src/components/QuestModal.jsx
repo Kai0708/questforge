@@ -15,6 +15,8 @@ export default function QuestModal({ quest, onSave, onClose }) {
   const [diff, setDiff] = useState('trivial')
   const [time, setTime] = useState('')
   const [bossTotal, setBossTotal] = useState(5)
+  const [dueAt, setDueAt] = useState('')
+  const [notifyBefore, setNotifyBefore] = useState(15)
   const [, forceUpdate] = useState(0)
 
   useEffect(() => {
@@ -24,6 +26,11 @@ export default function QuestModal({ quest, onSave, onClose }) {
       setDiff(quest.difficulty || 'trivial')
       setTime(quest.estimated_minutes || '')
       setBossTotal(quest.boss_total || 5)
+      setDueAt(quest.due_at ? quest.due_at.slice(0, 16) : '')
+      setNotifyBefore(quest.notify_before_minutes || 15)
+    } else {
+      setDueAt('')
+      setNotifyBefore(15)
     }
     const handler = () => forceUpdate(n => n + 1)
     window.addEventListener('medievalchange', handler)
@@ -41,6 +48,8 @@ export default function QuestModal({ quest, onSave, onClose }) {
       is_boss: isBoss,
       boss_total: isBoss ? (parseInt(bossTotal) || 5) : 1,
       boss_progress: quest?.boss_progress || 0,
+      due_at: dueAt ? new Date(dueAt).toISOString() : null,
+      notify_before_minutes: Math.max(0, parseInt(notifyBefore) || 0),
     })
   }
 
@@ -72,6 +81,14 @@ export default function QuestModal({ quest, onSave, onClose }) {
         <div className="fgroup">
           <label className="flabel">{getT('time_label')}</label>
           <input className="finput" type="number" placeholder="30" min="1" value={time} onChange={e => setTime(e.target.value)} />
+        </div>
+        <div className="fgroup">
+          <label className="flabel">{getThemeText('Task Date & Time', 'Quest Date & Time', 'Hour of Quest')}</label>
+          <input className="finput" type="datetime-local" value={dueAt} onChange={e => setDueAt(e.target.value)} />
+        </div>
+        <div className="fgroup">
+          <label className="flabel">{getThemeText('Notify minutes before', 'Warn me minutes before', 'Herald minutes before')}</label>
+          <input className="finput" type="number" min="0" placeholder="15" value={notifyBefore} onChange={e => setNotifyBefore(e.target.value)} />
         </div>
         {diff === 'boss' && (
           <div className="fgroup">
