@@ -35,6 +35,42 @@ export default function Dashboard({ session }) {
     loadQuests()
   }, [session])
 
+  // Scheduled quest notifications
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof Notification === 'undefined') return
+    if (Notification.permission === 'default') Notification.requestPermission().catch(() => {})
+
+    const now = Date.now()
+    const timers = []
+    const notifiedKey = 'qf_notified_reminders'
+    const notified = JSON.parse(localStorage.getItem(notifiedKey) || '{}')
+
+    quests.filter(q => !q.completed && q.due_at).forEach(q => {
+      const dueMs = new Date(q.due_at).getTime()
+      if (!Number.isFinite(dueMs)) return
+      const beforeMin = Math.max(0, q.notify_before_minutes || 0)
+      const notifyMs = dueMs - beforeMin * 60 * 1000
+      const stamp = `${q.id}:${notifyMs}`
+      if (notified[stamp]) return
+
+      const delay = notifyMs - now
+      if (delay <= 0) return
+
+      const id = setTimeout(() => {
+        if (Notification.permission === 'granted') {
+          new Notification('Quest reminder', {
+            body: `${q.title} starts in ${beforeMin} minute${beforeMin === 1 ? '' : 's'}.`,
+          })
+        }
+        notified[stamp] = true
+        localStorage.setItem(notifiedKey, JSON.stringify(notified))
+      }, delay)
+      timers.push(id)
+    })
+
+    return () => timers.forEach(clearTimeout)
+  }, [quests])
+
   // Timer
   useEffect(() => {
     if (!timerOn) return
