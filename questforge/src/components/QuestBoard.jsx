@@ -69,6 +69,8 @@ export default function QuestBoard({ quests, allQuests, filter, setFilter, doneC
             <div className="qfooter">
               <span className="xp-tag">✦ {({ trivial: 10, easy: 25, medium: 50, hard: 100, boss: 200 }[q.difficulty] || 10)} XP</span>
               {q.estimated_minutes > 0 && <span className="time-tag">⏳ ~{q.estimated_minutes} {getT('min_label')}</span>}
+              {q.due_at && <span className="time-tag">📅 {new Date(q.due_at).toLocaleString()}</span>}
+              {q.due_at && q.notify_before_minutes >= 0 && <span className="time-tag">🔔 {q.notify_before_minutes}m before</span>}
               <div style={{ display: 'flex', gap: '.3rem' }}>
                 {!q.completed && (
                   <button className="btn-complete" onClick={e => { e.stopPropagation(); onComplete(q) }}>

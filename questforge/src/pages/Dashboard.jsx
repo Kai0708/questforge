@@ -35,6 +35,42 @@ export default function Dashboard({ session }) {
     loadQuests()
   }, [session])
 
+  // Scheduled quest notifications
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof Notification === 'undefined') return
+    if (Notification.permission === 'default') Notification.requestPermission().catch(() => {})
+
+    const now = Date.now()
+    const timers = []
+    const notifiedKey = 'qf_notified_reminders'
+    const notified = JSON.parse(localStorage.getItem(notifiedKey) || '{}')
+
+    quests.filter(q => !q.completed && q.due_at).forEach(q => {
+      const dueMs = new Date(q.due_at).getTime()
+      if (!Number.isFinite(dueMs)) return
+      const beforeMin = Math.max(0, q.notify_before_minutes || 0)
+      const notifyMs = dueMs - beforeMin * 60 * 1000
+      const stamp = `${q.id}:${notifyMs}`
+      if (notified[stamp]) return
+
+      const delay = notifyMs - now
+      if (delay <= 0) return
+
+      const id = setTimeout(() => {
+        if (Notification.permission === 'granted') {
+          new Notification('Quest reminder', {
+            body: `${q.title} starts in ${beforeMin} minute${beforeMin === 1 ? '' : 's'}.`,
+          })
+        }
+        notified[stamp] = true
+        localStorage.setItem(notifiedKey, JSON.stringify(notified))
+      }, delay)
+      timers.push(id)
+    })
+
+    return () => timers.forEach(clearTimeout)
+  }, [quests])
+
   // Timer
   useEffect(() => {
     if (!timerOn) return
@@ -98,25 +134,63 @@ export default function Dashboard({ session }) {
     if (data) setQuests(data)
   }
 
+  function stripScheduleFields(payload) {
+    const { due_at, notify_before_minutes, ...rest } = payload
+    return rest
+  }
+
+  function hasScheduleColumnError(error) {
+    const message = `${error?.message || ''} ${error?.details || ''}`.toLowerCase()
+    return message.includes('due_at') || message.includes('notify_before_minutes')
+  }
+
   async function saveQuest(questData) {
-    if (editingQuest) {
-      const { data } = await supabase
-        .from('quests')
-        .update(questData)
-        .eq('id', editingQuest.id)
-        .select()
-        .single()
-      if (data) setQuests(q => q.map(x => x.id === data.id ? data : x))
-    } else {
-      const { data } = await supabase
-        .from('quests')
-        .insert({ ...questData, user_id: session.user.id })
-        .select()
-        .single()
-      if (data) setQuests(q => [data, ...q])
+    const payload = { ...questData }
+
+    try {
+      if (editingQuest) {
+        let result = await supabase
+          .from('quests')
+          .update(payload)
+          .eq('id', editingQuest.id)
+          .select()
+          .single()
+
+        if (result.error && hasScheduleColumnError(result.error)) {
+          result = await supabase
+            .from('quests')
+            .update(stripScheduleFields(payload))
+            .eq('id', editingQuest.id)
+            .select()
+            .single()
+        }
+
+        if (result.error) throw result.error
+        if (result.data) setQuests(q => q.map(x => x.id === result.data.id ? result.data : x))
+      } else {
+        let result = await supabase
+          .from('quests')
+          .insert({ ...payload, user_id: session.user.id })
+          .select()
+          .single()
+
+        if (result.error && hasScheduleColumnError(result.error)) {
+          result = await supabase
+            .from('quests')
+            .insert({ ...stripScheduleFields(payload), user_id: session.user.id })
+            .select()
+            .single()
+        }
+
+        if (result.error) throw result.error
+        if (result.data) setQuests(q => [result.data, ...q])
+      }
+
+      setModalOpen(false)
+      setEditingQuest(null)
+    } catch (err) {
+      alert(err?.message || 'Could not save quest. Please try again.')
     }
-    setModalOpen(false)
-    setEditingQuest(null)
   }
 
   async function deleteQuest(id) {
