@@ -17,6 +17,9 @@ export default function QuestModal({ quest, onSave, onClose }) {
   const [bossTotal, setBossTotal] = useState(5)
   const [dueAt, setDueAt] = useState('')
   const [notifyBefore, setNotifyBefore] = useState(15)
+ codex/add-task-date-and-time-feature-nv9mzo
+  const [showSchedule, setShowSchedule] = useState(false)
+ main
   const [, forceUpdate] = useState(0)
 
   useEffect(() => {
@@ -28,9 +31,17 @@ export default function QuestModal({ quest, onSave, onClose }) {
       setBossTotal(quest.boss_total || 5)
       setDueAt(quest.due_at ? quest.due_at.slice(0, 16) : '')
       setNotifyBefore(quest.notify_before_minutes || 15)
+ codex/add-task-date-and-time-feature-nv9mzo
+      setShowSchedule(!!quest.due_at)
     } else {
       setDueAt('')
       setNotifyBefore(15)
+      setShowSchedule(false)
+
+    } else {
+      setDueAt('')
+      setNotifyBefore(15)
+ main
     }
     const handler = () => forceUpdate(n => n + 1)
     window.addEventListener('medievalchange', handler)
@@ -83,12 +94,31 @@ export default function QuestModal({ quest, onSave, onClose }) {
           <input className="finput" type="number" placeholder="30" min="1" value={time} onChange={e => setTime(e.target.value)} />
         </div>
         <div className="fgroup">
+ codex/add-task-date-and-time-feature-nv9mzo
+          <button
+            type="button"
+            className="btn-can"
+            style={{ width: '100%', marginBottom: '.5rem' }}
+            onClick={() => setShowSchedule(v => !v)}
+          >
+            {showSchedule ? '▼ ' : '► '}{getThemeText('Schedule & reminder (optional)', 'Quest schedule & herald (optional)', 'Schedule & herald (optional)')}
+          </button>
+          {showSchedule && (
+            <>
+              <label className="flabel">{getThemeText('Task Date & Time', 'Quest Date & Time', 'Hour of Quest')}</label>
+              <input className="finput" type="datetime-local" value={dueAt} onChange={e => setDueAt(e.target.value)} />
+              <label className="flabel">{getThemeText('Notify minutes before', 'Warn me minutes before', 'Herald minutes before')}</label>
+              <input className="finput" type="number" min="0" placeholder="15" value={notifyBefore} onChange={e => setNotifyBefore(e.target.value)} />
+            </>
+          )}
+
           <label className="flabel">{getThemeText('Task Date & Time', 'Quest Date & Time', 'Hour of Quest')}</label>
           <input className="finput" type="datetime-local" value={dueAt} onChange={e => setDueAt(e.target.value)} />
         </div>
         <div className="fgroup">
           <label className="flabel">{getThemeText('Notify minutes before', 'Warn me minutes before', 'Herald minutes before')}</label>
           <input className="finput" type="number" min="0" placeholder="15" value={notifyBefore} onChange={e => setNotifyBefore(e.target.value)} />
+ main
         </div>
         {diff === 'boss' && (
           <div className="fgroup">

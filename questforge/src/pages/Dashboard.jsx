@@ -134,25 +134,63 @@ export default function Dashboard({ session }) {
     if (data) setQuests(data)
   }
 
+  function stripScheduleFields(payload) {
+    const { due_at, notify_before_minutes, ...rest } = payload
+    return rest
+  }
+
+  function hasScheduleColumnError(error) {
+    const message = `${error?.message || ''} ${error?.details || ''}`.toLowerCase()
+    return message.includes('due_at') || message.includes('notify_before_minutes')
+  }
+
   async function saveQuest(questData) {
-    if (editingQuest) {
-      const { data } = await supabase
-        .from('quests')
-        .update(questData)
-        .eq('id', editingQuest.id)
-        .select()
-        .single()
-      if (data) setQuests(q => q.map(x => x.id === data.id ? data : x))
-    } else {
-      const { data } = await supabase
-        .from('quests')
-        .insert({ ...questData, user_id: session.user.id })
-        .select()
-        .single()
-      if (data) setQuests(q => [data, ...q])
+    const payload = { ...questData }
+
+    try {
+      if (editingQuest) {
+        let result = await supabase
+          .from('quests')
+          .update(payload)
+          .eq('id', editingQuest.id)
+          .select()
+          .single()
+
+        if (result.error && hasScheduleColumnError(result.error)) {
+          result = await supabase
+            .from('quests')
+            .update(stripScheduleFields(payload))
+            .eq('id', editingQuest.id)
+            .select()
+            .single()
+        }
+
+        if (result.error) throw result.error
+        if (result.data) setQuests(q => q.map(x => x.id === result.data.id ? result.data : x))
+      } else {
+        let result = await supabase
+          .from('quests')
+          .insert({ ...payload, user_id: session.user.id })
+          .select()
+          .single()
+
+        if (result.error && hasScheduleColumnError(result.error)) {
+          result = await supabase
+            .from('quests')
+            .insert({ ...stripScheduleFields(payload), user_id: session.user.id })
+            .select()
+            .single()
+        }
+
+        if (result.error) throw result.error
+        if (result.data) setQuests(q => [result.data, ...q])
+      }
+
+      setModalOpen(false)
+      setEditingQuest(null)
+    } catch (err) {
+      alert(err?.message || 'Could not save quest. Please try again.')
     }
-    setModalOpen(false)
-    setEditingQuest(null)
   }
 
   async function deleteQuest(id) {
