@@ -226,12 +226,12 @@ export function SettingsPage({ profile, onSave, onLogout, onQuestImport, debugUn
         <div className="scard-title" style={{ color: 'var(--gold3)' }}>⚔ Medieval-ness</div>
         <div style={{ marginBottom: '1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.7rem', gap: '.4rem' }}>
-            <span style={{ fontSize: '.78rem', color: 'var(--ink)', fontWeight: 700, textShadow: '0 1px 2px rgba(0,0,0,.55)' }}>Modern</span>
+            <span style={{ fontSize: '.78rem', color: 'var(--gold2)', fontWeight: 700, textShadow: '0 1px 2px rgba(0,0,0,.55)' }}>Modern</span>
             <div style={{ textAlign: 'center' }}>
               <div style={{ fontFamily: "'Almendra Display', serif", fontSize: '1.1rem', color: 'var(--gold3)', fontWeight: 700, textShadow: '0 1px 3px rgba(0,0,0,.65)' }}>{currentLevel.label}</div>
-              <div style={{ fontSize: '.7rem', color: 'var(--ink)', fontStyle: 'italic', textShadow: '0 1px 2px rgba(0,0,0,.55)' }}>{currentLevel.desc}</div>
+              <div style={{ fontSize: '.7rem', color: 'var(--parch2)', fontStyle: 'italic', textShadow: '0 1px 2px rgba(0,0,0,.55)' }}>{currentLevel.desc}</div>
             </div>
-            <span style={{ fontSize: '.78rem', color: 'var(--ink)', fontWeight: 700, textShadow: '0 1px 2px rgba(0,0,0,.55)' }}>Full Epic</span>
+            <span style={{ fontSize: '.78rem', color: 'var(--gold2)', fontWeight: 700, textShadow: '0 1px 2px rgba(0,0,0,.55)' }}>Full Epic</span>
           </div>
           <input
             type="range" min="0" max="100" step="25"
@@ -243,7 +243,7 @@ export function SettingsPage({ profile, onSave, onLogout, onQuestImport, debugUn
             {MEDIEVAL_LEVELS.map(l => (
               <span key={l.value} style={{
                 fontSize: '.65rem',
-                color: medievalness === l.value ? 'var(--gold3)' : 'var(--ink)',
+                color: medievalness === l.value ? 'var(--gold3)' : 'var(--parch2)',
                 fontWeight: medievalness === l.value ? 700 : 400,
                 cursor: 'pointer',
                 transition: 'color .2s',
@@ -255,7 +255,7 @@ export function SettingsPage({ profile, onSave, onLogout, onQuestImport, debugUn
             ))}
           </div>
           <div style={{ marginTop: '1rem', padding: '.6rem .8rem', background: 'rgba(200,145,30,0.12)', border: '1px solid rgba(200,145,30,0.3)', borderRadius: 2 }}>
-            <div style={{ fontSize: '.72rem', color: 'var(--ink2)', fontStyle: 'italic' }}>
+            <div style={{ fontSize: '.72rem', color: 'var(--parch2)', fontStyle: 'italic' }}>
               {medievalness === 0 && 'Clean modern interface — plain English, sans-serif fonts'}
               {medievalness === 25 && 'Rustic tavern style — warmer language, Georgia serif'}
               {medievalness === 50 && 'Classic medieval — Fondamento cursive, quest vocabulary'}
