@@ -225,13 +225,13 @@ export function SettingsPage({ profile, onSave, onLogout, onQuestImport, debugUn
       <div className="scard" style={{ background: 'linear-gradient(155deg,#2a1e0a 0%,#1a1208 100%)', border: '2px solid var(--gold)' }}>
         <div className="scard-title" style={{ color: 'var(--gold3)' }}>⚔ Medieval-ness</div>
         <div style={{ marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.7rem' }}>
-            <span style={{ fontSize: '.78rem', color: 'var(--ink2)' }}>Modern</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.7rem', gap: '.4rem' }}>
+            <span style={{ fontSize: '.78rem', color: 'var(--ink)', fontWeight: 700, textShadow: '0 1px 2px rgba(0,0,0,.55)' }}>Modern</span>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontFamily: "'Almendra Display', serif", fontSize: '1.1rem', color: 'var(--gold3)', fontWeight: 700 }}>{currentLevel.label}</div>
-              <div style={{ fontSize: '.7rem', color: 'var(--ink2)', fontStyle: 'italic' }}>{currentLevel.desc}</div>
+              <div style={{ fontFamily: "'Almendra Display', serif", fontSize: '1.1rem', color: 'var(--gold3)', fontWeight: 700, textShadow: '0 1px 3px rgba(0,0,0,.65)' }}>{currentLevel.label}</div>
+              <div style={{ fontSize: '.7rem', color: 'var(--ink)', fontStyle: 'italic', textShadow: '0 1px 2px rgba(0,0,0,.55)' }}>{currentLevel.desc}</div>
             </div>
-            <span style={{ fontSize: '.78rem', color: 'var(--ink2)' }}>Full Epic</span>
+            <span style={{ fontSize: '.78rem', color: 'var(--ink)', fontWeight: 700, textShadow: '0 1px 2px rgba(0,0,0,.55)' }}>Full Epic</span>
           </div>
           <input
             type="range" min="0" max="100" step="25"
@@ -239,14 +239,18 @@ export function SettingsPage({ profile, onSave, onLogout, onQuestImport, debugUn
             onChange={e => applyMedievalness(parseInt(e.target.value))}
             style={{ width: '100%', accentColor: '#C8911E', cursor: 'pointer', height: '8px' }}
           />
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '.5rem', gap: '.3rem' }}>
             {MEDIEVAL_LEVELS.map(l => (
               <span key={l.value} style={{
                 fontSize: '.65rem',
-                color: medievalness === l.value ? 'var(--gold3)' : 'var(--ink2)',
+                color: medievalness === l.value ? 'var(--gold3)' : 'var(--ink)',
                 fontWeight: medievalness === l.value ? 700 : 400,
                 cursor: 'pointer',
                 transition: 'color .2s',
+                textShadow: '0 1px 2px rgba(0,0,0,.55)',
+                padding: '0 .2rem',
+                borderRadius: 2,
+                background: medievalness === l.value ? 'rgba(0,0,0,.28)' : 'rgba(0,0,0,.16)',
               }} onClick={() => applyMedievalness(l.value)}>{l.label}</span>
             ))}
           </div>
